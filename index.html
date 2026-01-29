@@ -1360,6 +1360,29 @@
         if (firebase.analytics) firebase.analytics();
         const db = firebase.database();
 
+        // --- "My Web" Analytics Tracking ---
+        const isMobilePhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobilePhone) {
+            // 1. Total Unique Mobile Visits Tracking
+            if (!localStorage.getItem('tracked_mobile_visit')) {
+                db.ref('analytics/totalMobileHits').transaction(current => (current || 0) + 1);
+                localStorage.setItem('tracked_mobile_visit', 'true');
+            }
+
+            // 2. Real-time Live Users Tracking
+            const myPresenceRef = db.ref('presence').push();
+            db.ref('.info/connected').on('value', snap => {
+                if (snap.val() === true) {
+                    myPresenceRef.onDisconnect().remove();
+                    myPresenceRef.set({
+                        active: true,
+                        lastActive: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+            });
+        }
+
         // --- المنتجات من Firebase ---
         let products = [];
         let editingProductIndex = null;
@@ -1781,6 +1804,7 @@
 
             const tabs = [
                 { id: 'overview', label: 'Overview', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>` },
+                { id: 'myweb', label: 'My Web', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L4 2l3.5 12.5L12 13l.5 2.5z"></path></svg>` },
                 { id: 'products', label: 'Products', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>` },
                 { id: 'orders', label: 'Orders', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>` },
                 { id: 'codes', label: 'Discount Codes', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>` }
@@ -1865,9 +1889,40 @@
         function loadTabContent(tabId) {
             const main = document.getElementById('dashMainContent');
             if (tabId === 'overview') renderDashOverview(main);
+            if (tabId === 'myweb') renderDashMyWeb(main);
             if (tabId === 'products') renderDashProducts(main);
             if (tabId === 'orders') renderDashOrders(main);
             if (tabId === 'codes') renderDashCodes(main);
+        }
+
+        function renderDashMyWeb(target) {
+            target.innerHTML = `
+                <div class="dash-header"><h2>My Web Analytics</h2></div>
+                <div class="stat-grid" id="myWebStatsGrid">
+                    <div class="stat-card">
+                        <div class="label">Total Phone Visits</div>
+                        <div class="value" id="totalPhoneVisits">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Phones Currently Online</div>
+                        <div class="value" style="color:#25d366" id="livePhoneUsers">0</div>
+                    </div>
+                </div>
+            `;
+
+            // Fetch total visits
+            db.ref('analytics/totalMobileHits').on('value', snap => {
+                const val = snap.val() || 0;
+                const el = document.getElementById('totalPhoneVisits');
+                if (el) el.innerText = val;
+            });
+
+            // Fetch live users
+            db.ref('presence').on('value', snap => {
+                const val = snap.numChildren() || 0;
+                const el = document.getElementById('livePhoneUsers');
+                if (el) el.innerText = val;
+            });
         }
 
         function renderDashOverview(target) {
