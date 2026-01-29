@@ -14,6 +14,8 @@
     <!-- Firebase Analytics (اختياري) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- Font Awesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Teko:wght@500;700&display=swap');
 
@@ -1063,6 +1065,100 @@
                 bottom: 14px;
             }
         }
+
+        /* --- Load More Button --- */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .load-more-btn {
+            background: linear-gradient(135deg, #784fe7 0%, #a1589e 100%);
+            color: #fff;
+            padding: 12px 60px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(120, 79, 231, 0.2);
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(120, 79, 231, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .load-more-btn:active {
+            transform: translateY(0);
+        }
+
+        /* --- Section Footer & Social Hub --- */
+        .section-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(120, 79, 231, 0.1);
+            text-align: center;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+
+        .section-footer-msg {
+            color: #784fe7;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .social-hub {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .social-hub-link {
+            transition: all 0.3s cubic-bezier(.33, 1, .68, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            /* زيادة الظل وتوضيحه */
+            text-decoration: none;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            /* إضافة إطار خفيف جداً للتوضيح */
+        }
+
+        .social-hub-link i {
+            font-size: 1.5rem;
+        }
+
+        .social-hub-link:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(120, 79, 231, 0.2);
+        }
+
+        .social-hub-link.fb {
+            color: #1877F2;
+        }
+
+        .social-hub-link.tt {
+            color: #000000;
+        }
+
+        .social-hub-link.ig {
+            color: #E4405F;
+        }
     </style>
     <style>
         /* لمعة متحركة على عناصر الناف بار عند الوقوف */
@@ -1273,6 +1369,34 @@
             { key: 'woman', label: 'Woman' },
             { key: 'offers', label: 'Offers' }
         ];
+
+        // --- Scroll Persistence Logic ---
+        const sectionScrollPositions = {};
+        let currentActiveView = 'trending'; // تتبع السكشن الحالي (سواء منتجات أو سلة إلخ)
+
+        function saveCurrentScroll() {
+            sectionScrollPositions[currentActiveView] = window.scrollY;
+        }
+
+        function restoreScroll(sectionKey) {
+            const pos = sectionScrollPositions[sectionKey] || 0;
+            setTimeout(() => {
+                window.scrollTo({ top: pos, behavior: 'instant' });
+            }, 50); // تأخير بسيط لضمان رندر المحتوى
+            currentActiveView = sectionKey;
+        }
+
+        // --- Load More Logic ---
+        const sectionDisplayLimits = {};
+        function getSectionLimit(typeKey) {
+            if (!sectionDisplayLimits[typeKey]) sectionDisplayLimits[typeKey] = 10;
+            return sectionDisplayLimits[typeKey];
+        }
+
+        function loadMore(typeKey) {
+            sectionDisplayLimits[typeKey] = getSectionLimit(typeKey) + 10;
+            renderProductsSection(typeKey, false); // لا نحتاج حفظ السكرول هنا، السكرول سيبقى في مكانه
+        }
         // --- المفضلات ---
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]'); // [{name, type}]
         function saveFavorites() {
@@ -1418,12 +1542,14 @@
             }
         }
         // --- تعديل عرض المنتجات لإرسال بيانات المنتج عند الضغط على الصورة ---
-        function renderProductsSection(typeKey) {
+        function renderProductsSection(typeKey, isSwitching = false) {
+            if (isSwitching) saveCurrentScroll();
+
             const container = document.getElementById('mainContainer');
             const type = productTypes.find(t => t.key === typeKey);
             // المنتجات غير المخفية فقط + البحث + فلتر القسم (مع مراعاة التريند)
             const searchTerm = (window.currentSearchTerm || '').toLowerCase();
-            const filtered = products.filter(p => {
+            const filteredAll = products.filter(p => {
                 // شرط القسم: لو تريند بنشوف الخاصية، لو قسم عادي بنطابق النوع
                 const typeMatch = (typeKey === 'trending') ? p.isTrending : (p.type === typeKey);
                 return typeMatch &&
@@ -1434,6 +1560,11 @@
                         (p.desc && p.desc.toLowerCase().includes(searchTerm))
                     );
             });
+
+            // تطبيق الليميت (Load More)
+            const limit = getSectionLimit(typeKey);
+            const filtered = filteredAll.slice(0, limit);
+
             let html = '';
 
             // إضافة البنرات في قسم التريند في البداية
@@ -1467,9 +1598,37 @@
             let initialCount = filtered.length; // عرض كل المنتجات فورًا بدون delay
             let shown = Math.min(initialCount, filtered.length);
             html += `<div class='products-grid' id='productsGrid'></div>`;
+
+            // إضافة زر More إذا كان هناك المزيد
+            if (filteredAll.length > limit) {
+                html += `
+                <div class="load-more-container">
+                    <button class="load-more-btn" onclick="loadMore('${typeKey}')">More</button>
+                </div>`;
+            }
+
+            // إضافة الفوتر لجميع الأقسام
+            html += `
+            <div class="section-footer">
+                <div class="section-footer-msg">Thank you for visiting our website!</div>
+                <div class="social-hub">
+                    <a href="" target="_blank" class="social-hub-link fb" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="" target="_blank" class="social-hub-link tt" title="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="" target="_blank" class="social-hub-link ig" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>`;
+
             container.innerHTML = html;
             const grid = document.getElementById('productsGrid');
             // دالة توليد كود المنتج (نفس الكود السابق)
+
+            if (isSwitching) restoreScroll(typeKey);
             function productCardHtml(prod, idx) {
                 const fadeDelay = idx * 60; // 60ms لكل بطاقة
                 let slider = '';
@@ -2101,12 +2260,13 @@
                 if (section === 'admin') {
                     showAdminLogin();
                 } else {
-                    renderProductsSection(section);
+                    renderProductsSection(section, true);
                 }
             }
         });
         // عرض قسم trending افتراضيا
         renderProductsSection('trending');
+        currentActiveView = 'trending';
         // زر العودة للأعلى
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         window.addEventListener('scroll', function () {
@@ -2750,6 +2910,7 @@
 
         // --- التنقل من البنرات ---
         function navigateToBannerSection(sectionKey) {
+            saveCurrentScroll();
             // تحديث الناف بار العلوي
             document.querySelectorAll('.navbar li').forEach(l => l.classList.remove('active'));
             const targetLi = document.querySelector(`.navbar li[data-section="${sectionKey}"]`);
@@ -2757,13 +2918,14 @@
 
             // تحديث الناف بار السفلي ليظل Home مفعل (لأنه كتالوج) أو نجعله غير مفعل حسب الرغبة
             // هنا سنتركه كما هو لأن renderProductsSection سيعمل
-            renderProductsSection(sectionKey);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderProductsSection(sectionKey); // Note: renderProductsSection internally doesn't handle restore here unless we pass true
+            restoreScroll(sectionKey);
         }
         window.navigateToBannerSection = navigateToBannerSection;
 
         // --- تبديل الناف بار السفلي ---
         function switchNav(el, section) {
+            saveCurrentScroll();
             // تحديث الشكل
             document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
             el.classList.add('active');
@@ -2772,18 +2934,22 @@
             if (section === 'home') {
                 renderProductsSection('trending');
                 document.querySelectorAll('.navbar li').forEach(l => l.classList.remove('active'));
+                restoreScroll('trending');
             } else if (section === 'cart') {
                 renderCartPage();
                 // إلغاء تفعيل الناف بار العلوي
                 document.querySelectorAll('.navbar li').forEach(l => l.classList.remove('active'));
+                restoreScroll('cart');
             } else if (section === 'favorites') {
                 renderFavoritesSection();
                 // إلغاء تفعيل الناف بار العلوي
                 document.querySelectorAll('.navbar li').forEach(l => l.classList.remove('active'));
+                restoreScroll('favorites');
             } else if (section === 'profile') {
                 renderProfileSection();
                 // إلغاء تفعيل الناف بار العلوي
                 document.querySelectorAll('.navbar li').forEach(l => l.classList.remove('active'));
+                restoreScroll('profile');
             }
         }
         window.switchNav = switchNav;
