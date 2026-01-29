@@ -495,7 +495,8 @@
         .product-title {
             font-size: 1.5rem;
             color: #5a4e7c;
-            margin-bottom: 2px;
+            margin-bottom: 0px;
+            margin-top: 2px;
         }
 
         .product-desc {
@@ -506,7 +507,7 @@
             padding: 6px 12px;
             border-radius: 8px;
             border: 1px solid rgba(0, 0, 0, 0.05);
-            margin: 4px 0 6px 0;
+            margin: 0px 0 0px 0;
             line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -542,6 +543,29 @@
             color: #b45d8c;
             margin-right: 8px;
             margin-left: 0;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+        }
+
+        .product-prices del::before,
+        .product-prices del::after {
+            content: "";
+            position: absolute;
+            left: -1px;
+            top: 50%;
+            width: calc(100% + 2px);
+            height: 1.5px;
+            background: #b45d8c;
+            pointer-events: none;
+        }
+
+        .product-prices del::before {
+            transform: rotate(-15deg);
+        }
+
+        .product-prices del::after {
+            transform: rotate(15deg);
         }
 
         .product-actions {
@@ -594,8 +618,8 @@
             transform: translateY(30px);
             animation: productFadeIn 0.35s cubic-bezier(.36, .07, .19, .97) forwards;
             animation-delay: var(--fade-delay, 0ms);
-            gap: 5px;
-            padding: 10px;
+            gap: 1px;
+            padding: 0px 5px;
         }
 
         .products-grid .product-card .product-title {
@@ -1731,7 +1755,7 @@
                         <div class='product-prices'>
                             <del>${prod.priceBefore} EGP</del> <span>${prod.priceAfter} EGP</span>
                         </div>
-                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:4px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
+                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:2px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
                     </div>
                 `;
             }
