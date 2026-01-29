@@ -495,7 +495,7 @@
         .product-title {
             font-size: 1.5rem;
             color: #5a4e7c;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
         }
 
         .product-desc {
@@ -506,7 +506,7 @@
             padding: 6px 12px;
             border-radius: 8px;
             border: 1px solid rgba(0, 0, 0, 0.05);
-            margin: 6px 0 10px 0;
+            margin: 4px 0 6px 0;
             line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -529,7 +529,7 @@
 
         .product-prices {
             font-size: 1.5rem;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
             font-weight: bold;
             display: flex;
             flex-direction: row-reverse;
@@ -1731,7 +1731,7 @@
                         <div class='product-prices'>
                             <del>${prod.priceBefore} EGP</del> <span>${prod.priceAfter} EGP</span>
                         </div>
-                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:8px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
+                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:4px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
                     </div>
                 `;
             }
