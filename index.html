@@ -1525,13 +1525,6 @@
             <span>Account</span>
         </div>
     </div>
-    <button id="scrollTopBtn"
-        style="display:none;position:fixed;bottom:100px;right:16px;z-index:9999;background:#b9b4e7;border:none;border-radius:50%;width:54px;height:54px;box-shadow:0 2px 12px #e0e0e0;cursor:pointer;align-items:center;justify-content:center;transition:opacity 0.3s;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="12" fill="#b9b4e7" />
-            <path d="M8 14l4-4 4 4" stroke="#5a4e7c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-    </button>
     <button id="whatsappBtn"
         style="display:flex;position:fixed;bottom:165px;right:16px;z-index:9999;background:#25d366;border:none;border-radius:50%;width:54px;height:54px;box-shadow:0 2px 12px #0007;cursor:pointer;align-items:center;justify-content:center;transition:opacity 0.3s;">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2758,13 +2751,6 @@
                 searchInput.focus();
             }
         };
-        // زر واتساب العائم
-        const whatsappBtn = document.getElementById('whatsappBtn');
-        if (whatsappBtn) {
-            whatsappBtn.onclick = function () {
-                window.open('https://wa.me/201121366757', '_blank');
-            };
-        }
     </script>
     <!-- Splash Screen Animation -->
     <script>
@@ -2791,6 +2777,14 @@
                         }, 400);
                     }, 900);
                 }, 700);
+            }
+
+            // WhatsApp Button Handler
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            if (whatsappBtn) {
+                whatsappBtn.addEventListener('click', function () {
+                    window.open('https://wa.me/201159768514', '_blank');
+                });
             }
         });
     </script>
@@ -3865,7 +3859,7 @@
 
 
         // --- Language & Translation Logic ---
-        let currentLang = localStorage.getItem('appLang') || 'en';
+        let currentLang = 'en'; // Always start in English
         const translations = {
             'nav-man': { en: 'Man', ar: 'رجالي' },
             'nav-woman': { en: 'Woman', ar: 'حريمي' },
@@ -3981,6 +3975,33 @@
 
         // Initial Call
         window.addEventListener('DOMContentLoaded', updateLanguageUI);
+    </script>
+    <!-- Scroll to Top Button -->
+    <div id="scrollTopBtn"
+        style="position:fixed;bottom:100px;right:16px;z-index:2147483647;width:45px;height:45px;background:#784fe7;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2);transition:all 0.3s ease;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"></path>
+        </svg>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+
+            // Click Handler
+            scrollBtn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Scroll Handler
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 300 || document.documentElement.scrollTop > 300) {
+                    scrollBtn.style.display = 'flex';
+                } else {
+                    scrollBtn.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 
