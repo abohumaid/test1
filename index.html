@@ -788,25 +788,37 @@
         }
 
         .add-to-cart-msg {
-            position: fixed;
-            top: 80px;
-            right: 30px;
-            background: #f346f3;
-            color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #784fe7;
             font-size: 1.1rem;
             font-weight: bold;
-            padding: 14px 28px;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px #e0e0e0;
-            z-index: 99999;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(120, 79, 231, 0.15);
+            z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s, transform 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 85%;
+            text-align: center;
+            border: 1px solid rgba(120, 79, 231, 0.1);
         }
 
         .add-to-cart-msg.show {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .add-to-cart-msg.flying {
+            opacity: 0;
+            transform: translate(var(--fly-x), var(--fly-y)) scale(0.1) rotate(20deg);
+            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: blur(2px);
         }
 
         #cartBtn svg circle {
@@ -1389,7 +1401,7 @@
                 fill="#fff" />
         </svg>
     </button>
-    <div id="addToCartMsg" class="add-to-cart-msg"></div>
+
     <div class="container" id="mainContainer">
         <!-- المحتوى يتغير هنا -->
     </div>
@@ -1529,30 +1541,49 @@
         function isFavorite(prod) {
             return favorites.some(f => f.name === prod.name && f.type === prod.type);
         }
-        function toggleFavorite(name, type) {
+        function toggleFavorite(btn, name, type) {
             const idx = favorites.findIndex(f => f.name === name && f.type === type);
+            let isFav = false;
             if (idx > -1) {
                 favorites.splice(idx, 1);
+                isFav = false;
             } else {
                 favorites.push({ name, type });
+                isFav = true;
             }
             saveFavorites();
             updateFavoritesCount();
-            const activeSection = document.querySelector('.navbar li.active')?.getAttribute('data-section');
-            // إذا كنا في صفحة المفضلات، حدثها فقط ولا تذهب لأي صفحة أخرى
-            if (activeSection === 'favorites' || document.getElementById('mainContainer')?.querySelector('.section-title')?.textContent === 'المفضلات') {
-                renderFavoritesSection();
-            } else {
-                renderProductsSection(activeSection);
+
+            // تحديث لون القلب محلياً فوراً بدون رندر كامل
+            if (btn) {
+                const svg = btn.querySelector('svg');
+                if (svg) svg.setAttribute('fill', isFav ? '#ff4444' : 'none');
             }
+
+            const activeSection = document.querySelector('.navbar li.active')?.getAttribute('data-section') || 'trending';
+
+            // إذا كنا في صفحة المفضلات، يجب إعادة الرندر لأن المنتج قد حُذف
+            const sectionTitle = document.querySelector('.section-title')?.textContent || '';
+            const isFavPage = sectionTitle.includes('المفضلات') || sectionTitle.includes('Favorites');
+
+            if (isFavPage) {
+                renderFavoritesSection();
+            }
+            // لاحظ: حذفنا الـ else الذي كان يعيد رندر المنتجات في الأقسام العادية لتجنب "اختفاء" المنتجات أو "القفز" للأعلى
         }
         function updateFavoritesCount() {
-            const favCount = document.getElementById('favoritesCount');
-            if (favCount) favCount.innerText = favorites.length;
+            // تنظيف المفضلات من المنتجات التي لم تعد موجودة في قاعدة البيانات (Ghost Products)
+            if (products.length > 0) {
+                const initialLen = favorites.length;
+                favorites = favorites.filter(fav => products.some(p => p.name === fav.name && p.type === fav.type));
+                if (favorites.length !== initialLen) saveFavorites();
+            }
+
             const favBadge = document.getElementById('favBadge');
             if (favBadge) {
                 favBadge.innerText = favorites.length;
-                favBadge.style.display = favorites.length > 0 ? 'flex' : 'none';
+                // إظهار البادج دائماً حتى لو كان 0 بناءً على طلب المستخدم
+                favBadge.style.display = 'flex';
             }
         }
         updateFavoritesCount();
@@ -1590,6 +1621,10 @@
                     const activeSection = document.querySelector('.navbar li.active')?.getAttribute('data-section') || 'trending';
                     renderProductsSection(activeSection);
                 }
+
+                // تحديث عداد المفضلات وتنظيفها بعد تحميل المنتجات
+                updateFavoritesCount();
+                updateCartCount();
 
                 // إذا كنا في لوحة الأدمن، حدث القائمة
                 if (document.getElementById('adminProductsList')) renderAdminProductsList();
@@ -1772,7 +1807,7 @@
                 let discount = getDiscountPercent(prod.priceBefore, prod.priceAfter);
                 let discountHtml = discount ? `<span style='background:#ff4444;color:#fff;padding:2px 8px;border-radius:6px;font-size:1rem;position:absolute;left:10px;top:10px;'>${discount}% OFF</span>` : '';
                 let fav = isFavorite(prod);
-                let heartBtn = `<button onclick='window.toggleFavorite("${prod.name.replace(/\"/g, '&quot;')}", "${prod.type}")' style='position:absolute;top:6px;right:0;background:none;border:none;cursor:pointer;z-index:10;'>
+                let heartBtn = `<button onclick='window.toggleFavorite(this, "${prod.name.replace(/\"/g, '&quot;')}", "${prod.type}")' style='position:absolute;top:6px;right:0;background:none;border:none;cursor:pointer;z-index:10;'>
                         <svg width='32' height='32' viewBox='0 0 24 24' fill='${fav ? "#ff4444" : "none"}' stroke='#ff4444' stroke-width='2'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>
                     </button>`;
                 let availableHtml = (prod.available === false) ? `<div style='color:#ff4444;font-weight:bold;margin-top:6px;'>Out of Stock</div>` : '';
@@ -1783,6 +1818,7 @@
                             ${heartBtn}
                             ${discountHtml}
                             ${availableHtml}
+                            <div class="add-to-cart-msg">Added to Cart!</div>
                         </div>
                         <div class='product-title'>${prod.name}</div>
                         <div class='product-desc'>${prod.desc}</div>
@@ -1790,7 +1826,7 @@
                         <div class='product-prices'>
                             <del>${prod.priceBefore} EGP</del> <span>${prod.priceAfter} EGP</span>
                         </div>
-                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:2px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
+                        ${(prod.available === false) ? '' : `<button class='add-to-cart-btn' onclick='addToCart(this, ${JSON.stringify(prod)})' style='background:#25d366;color:#fff;font-weight:bold;padding:8px 0;border-radius:6px;width:100%;margin-top:2px;font-size:1.1rem;cursor:pointer;border:none;'>Add to Cart</button>`}
                     </div>
                 `;
             }
@@ -2512,13 +2548,21 @@
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         let cartShakeInterval = null;
         function updateCartCount() {
+            // تنظيف السلة من المنتجات التي لم تعد موجودة في الموقع (Ghost Cleanup)
+            if (products.length > 0) {
+                const initialLen = cart.length;
+                cart = cart.filter(item => products.some(p => p.name === item.name && p.type === item.type));
+                if (cart.length !== initialLen) localStorage.setItem('cart', JSON.stringify(cart));
+            }
+
             const cartCountEl = document.getElementById('cartCount');
             if (cartCountEl) cartCountEl.innerText = cart.length;
 
             const cartBadge = document.getElementById('cartBadge');
             if (cartBadge) {
                 cartBadge.innerText = cart.length;
-                cartBadge.style.display = cart.length > 0 ? 'flex' : 'none';
+                // إظهار البادج دائماً حتى لو كان 0 بناءً على طلب المستخدم
+                cartBadge.style.display = 'flex';
             }
 
             // اهتزاز السلة كل 3 ثواني إذا كانت السلة غير فارغة
@@ -2541,12 +2585,12 @@
             // حفظ السلة في localStorage
             localStorage.setItem('cart', JSON.stringify(cart));
         }
-        function addToCart(prod) {
+        function addToCart(btn, prod) {
             // أضف المنتج كما هو (حتى لو الاسم والنوع متكررين)
             cart.push({ ...prod, qty: 1 });
             updateCartCount();
             // رسالة عائمة
-            showAddToCartMessage(prod.name);
+            showAddToCartMessage(btn);
         }
         // عرض صفحة السلة
         function renderCartPage() {
@@ -3134,13 +3178,44 @@
     </script>
     <script>
         // أضف دالة عرض الرسالة العائمة بعد addToCart مباشرة
-        function showAddToCartMessage(productName) {
-            const msg = document.getElementById('addToCartMsg');
-            if (msg) {
-                msg.innerText = ` ! إلى السلة "${productName}" تم اضافة `;
-                msg.classList.add('show');
-                clearTimeout(msg._hideTimeout);
-                msg._hideTimeout = setTimeout(() => msg.classList.remove('show'), 1500);
+        function showAddToCartMessage(btn) {
+            // البحث عن كارت المنتج الذي تم الضغط عليه باستخدام زر الـ Add
+            const targetCard = btn.closest('.product-card');
+
+            if (targetCard) {
+                const msg = targetCard.querySelector('.add-to-cart-msg');
+                if (msg) {
+                    // المرحلة 1: الظهور فوق الصورة
+                    msg.classList.remove('flying');
+                    msg.style.removeProperty('--fly-x');
+                    msg.style.removeProperty('--fly-y');
+                    msg.classList.add('show');
+
+                    clearTimeout(msg._hideTimeout);
+
+                    // حساب إحداثيات السلة بالنسبة لمكان الرسالة الحالي
+                    const cartIcon = document.querySelector('.bottom-nav-item.cart-item');
+                    if (cartIcon) {
+                        const msgRect = msg.getBoundingClientRect();
+                        const cartRect = cartIcon.getBoundingClientRect();
+                        const destX = (cartRect.left + cartRect.width / 2) - (msgRect.left + msgRect.width / 2);
+                        const destY = (cartRect.top + cartRect.height / 2) - (msgRect.top + msgRect.height / 2);
+
+                        msg.style.setProperty('--fly-x', `calc(-50% + ${destX}px)`);
+                        msg.style.setProperty('--fly-y', `calc(-50% + ${destY}px)`);
+                    }
+
+                    // المرحلة 2: الطيران نحو السلة بعد فترة بسيطة
+                    msg._hideTimeout = setTimeout(() => {
+                        msg.classList.remove('show');
+                        msg.classList.add('flying');
+
+                        // المرحلة 3: الإخفاء التام بعد انتهاء الأنيميشن
+                        setTimeout(() => {
+                            msg.classList.remove('flying');
+                        }, 900);
+                    }, 800);
+                }
             }
         }
         // متغير لتخزين الطلبات الحالية للفلترة
@@ -3319,7 +3394,7 @@
                         slider = `<img src='${prod.images[0] || ''}' style='cursor:pointer;' onclick='showImageModal("${prod.images[0]}")'>`;
                     }
                     let fav = isFavorite(prod);
-                    let heartBtn = `<button onclick='window.toggleFavorite("${prod.name.replace(/"/g, '&quot;')}", "${prod.type}")' style='position:absolute;top:6px;right:0;background:none;border:none;cursor:pointer;z-index:10;'>
+                    let heartBtn = `<button onclick='window.toggleFavorite(this, "${prod.name.replace(/"/g, '&quot;')}", "${prod.type}")' style='position:absolute;top:6px;right:0;background:none;border:none;cursor:pointer;z-index:10;'>
                         <svg width='32' height='32' viewBox='0 0 24 24' fill='${fav ? "#ff4444" : "none"}' stroke='#ff4444' stroke-width='2'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>
                     </button>`;
                     let availableHtml = (prod.available === false) ? `<div style='color:#ff4444;font-weight:bold;margin-top:6px;'>Out of Stock</div>` : '';
