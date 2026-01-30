@@ -841,7 +841,8 @@
         }
 
         .add-to-cart-btn {
-            margin-top: 2px !important;
+            margin-top: 0px !important;
+            margin-bottom: 5px !important;
             background: #a1589e !important;
             color: #222 !important;
             border: none;
@@ -1431,12 +1432,45 @@
         if (firebase.analytics) firebase.analytics();
         const db = firebase.database();
 
-        // --- "My Web" Analytics Tracking (All Devices) ---
-        // 1. Total Unique Visits Tracking
-        if (!localStorage.getItem('tracked_visit')) {
-            db.ref('analytics/totalHits').transaction(current => (current || 0) + 1);
-            localStorage.setItem('tracked_visit', 'true');
+        // --- "My Web" Smart Analytics Tracking (Unique Devices) ---
+        async function trackUniqueVisitor() {
+            try {
+                // 1. إنشاء بصمة سريعة للجهاز (عناصر لا تتغير بمسح الكاش)
+                const fingerprint = [
+                    navigator.userAgent,
+                    screen.width + 'x' + screen.height,
+                    new Date().getTimezoneOffset(),
+                    navigator.language
+                ].join('|');
+
+                // 2. تحويل البصمة إلى Hash بسيط (أرقام فقط لسهولة التخزين)
+                let hash = 0;
+                for (let i = 0; i < fingerprint.length; i++) {
+                    hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+                    hash |= 0;
+                }
+                const deviceID = 'v_' + Math.abs(hash);
+
+                // 3. التحقق من السجل في Firebase (بدلاً من localStorage فقط)
+                const visitorRef = db.ref('analytics/visitorRegistry/' + deviceID);
+
+                visitorRef.transaction(current => {
+                    if (current === null) {
+                        // زائر جديد تماماً على مستوى الجهاز
+                        db.ref('analytics/totalHits').transaction(hits => (hits || 0) + 1);
+                        return { firstVisit: firebase.database.ServerValue.TIMESTAMP };
+                    }
+                    return current; // الجهاز مسجل مسبقاً، لا نفعل شيئاً
+                });
+
+                // تأكيد إضافي للمتصفح الحالي (سرعة الوصول)
+                localStorage.setItem('tracked_visit', deviceID);
+
+            } catch (e) {
+                console.error("Analytics Error:", e);
+            }
         }
+        trackUniqueVisitor();
 
         // 2. Real-time Live Users Tracking
         const myPresenceRef = db.ref('presence').push();
