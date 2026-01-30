@@ -1421,9 +1421,11 @@
             </div>
             <div style="width:100%;display:flex;justify-content:center;align-items:center;margin:8px 0 0 0;gap:12px;">
                 <div id="searchBarContainer"
-                    style="display:flex;justify-content:center;align-items:center;gap:12px;margin:0;">
+                    style="display:flex;justify-content:center;align-items:center;gap:12px;margin:0;position:relative;width:70%;max-width:400px;">
                     <input id="searchInput" type="text" placeholder=" Search ...                🔍"
-                        style="width:70%;max-width:400px;padding:10px 16px;font-size:1.2rem;border-radius:12px; border:2px solid #b9b4e7; background:#faf9f6;" />
+                        style="width:100%;padding:10px 40px 10px 16px;font-size:1.2rem;border-radius:12px; border:2px solid #b9b4e7; background:#faf9f6;" />
+                    <span id="clearSearch" onclick="clearSearchInput()"
+                        style="position:absolute; right: 12px; cursor:pointer; font-size:1.5rem; color:#784fe7; display:none; font-weight:bold; user-select:none;">&times;</span>
                 </div>
             </div>
             <nav class="navbar" style="background:none;box-shadow:none;padding-bottom:0;justify-content:center;">
@@ -1516,14 +1518,14 @@
         });
         // --- Firebase config ---
         const firebaseConfig = {
-            apiKey: "AIzaSyABBNyziST2TOTr1YQv7nEAq_V1LVoymo0",
-            authDomain: "abo-elela.firebaseapp.com",
-            databaseURL: "https://abo-elela-default-rtdb.firebaseio.com",
-            projectId: "abo-elela",
-            storageBucket: "abo-elela.firebasestorage.app",
-            messagingSenderId: "1094481849658",
-            appId: "1:1094481849658:web:111289c004cfcfc9ef7403",
-            measurementId: "G-V22KTTMVD8"
+            apiKey: "AIzaSyBQk84dO9eB39kQ5eQXqO7MbrBKHP1uWyQ",
+            authDomain: "elfanan-supplements.firebaseapp.com",
+            databaseURL: "https://elfanan-supplements-default-rtdb.firebaseio.com",
+            projectId: "elfanan-supplements",
+            storageBucket: "elfanan-supplements.firebasestorage.app",
+            messagingSenderId: "373631110527",
+            appId: "1:373631110527:web:321bf56dead7f4c3df5e4a",
+            measurementId: "G-R3G7ZLEWEK"
         };
         firebase.initializeApp(firebaseConfig);
         if (firebase.analytics) firebase.analytics();
@@ -1813,17 +1815,19 @@
             const container = document.getElementById('mainContainer');
             const type = productTypes.find(t => t.key === typeKey);
             // المنتجات غير المخفية فقط + البحث + فلتر القسم (مع مراعاة التريند)
-            const searchTerm = (window.currentSearchTerm || '').toLowerCase();
+            const searchTerm = (window.currentSearchTerm || '').toLowerCase().trim();
             const filteredAll = products.filter(p => {
-                // شرط القسم: لو تريند بنشوف الخاصية، لو قسم عادي بنطابق النوع
-                const typeMatch = (typeKey === 'trending') ? p.isTrending : (p.type === typeKey);
-                return typeMatch &&
-                    !p.hidden &&
-                    (
-                        !searchTerm ||
+                const isVisible = !p.hidden;
+                if (!searchTerm) {
+                    const typeMatch = (typeKey === 'trending') ? p.isTrending : (p.type === typeKey);
+                    return isVisible && typeMatch;
+                } else {
+                    // البحث الشامل في جميع الأقسام عند وجود نص بحث
+                    return isVisible && (
                         (p.name && p.name.toLowerCase().includes(searchTerm)) ||
                         (p.desc && p.desc.toLowerCase().includes(searchTerm))
                     );
+                }
             });
 
             // تطبيق الليميت (Load More)
@@ -1837,22 +1841,24 @@
                 html += `
                 <div class="banners-container">
                     <div class="banner-card" onclick="navigateToBannerSection('man')">
-                        <img src="Ss1.png" alt="Man Collection" loading="lazy">
+                        <img src="Ss1.png" alt="Man Collection" fetchpriority="high">
                         <button class="banner-btn">Shop Man</button>
                     </div>
                     <div class="banner-card" onclick="navigateToBannerSection('woman')">
-                        <img src="Ss2.png" alt="Woman Collection" loading="lazy">
+                        <img src="Ss2.png" alt="Woman Collection" fetchpriority="high">
                         <button class="banner-btn">Shop Woman</button>
                     </div>
                     <div class="banner-card" onclick="navigateToBannerSection('offers')">
-                        <img src="Ss3.png" alt="Offers" loading="lazy">
+                        <img src="Ss3.png" alt="Offers" fetchpriority="high">
                         <button class="banner-btn">Shop Offers</button>
                     </div>
                 </div>`;
             }
 
             // عنوان السكشن يظهر بعد البنرات في حالة التريند، أو في البداية للأقسام الأخرى
-            html += `<div class='section-title'>${type ? type.label : ''}</div>`;
+            // عنوان السكشن: لو في بحث بنكتب Search Results، لو مفيش بنكتب اسم السكشن
+            const titleText = searchTerm ? `Search Results (${filteredAll.length})` : (type ? type.label : '');
+            html += `<div class='section-title'>${titleText}</div>`;
 
             if (filtered.length === 0) {
                 html += `<div style='text-align:center;'>No products in this section yet.</div>`;
@@ -1928,7 +1934,7 @@
                         </div>
                         <div class='product-title'>${prod.name}</div>
                         <div class='product-desc'>${prod.desc}</div>
-                        <div class='product-type'>${type ? type.label : ''}</div>
+                        <div class='product-type'>${productTypes.find(t => t.key === prod.type)?.label || prod.type}</div>
                         <div class='product-prices'>
                             <del>${prod.priceBefore} EGP</del> <span>${prod.priceAfter} EGP</span>
                         </div>
@@ -2172,6 +2178,16 @@
         function renderDashOverview(target) {
             target.innerHTML = `
                 <div class="dash-header"><h2>Analytics Overview</h2></div>
+
+                <div style="background:#f9f9f9; padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #eee;">
+                    <h3 style="margin-top:0; color:#5a4e7c;">Quick Filters (فلاتر سريعة)</h3>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                        <label style="font-weight:bold; color:#666;">From: <input type="date" id="analysisFromDate" onchange="updateDashOverview()" style="padding:6px; border-radius:6px; border:1px solid #ddd;"></label>
+                        <label style="font-weight:bold; color:#666;">To: <input type="date" id="analysisToDate" onchange="updateDashOverview()" style="padding:6px; border-radius:6px; border:1px solid #ddd;"></label>
+                        <button onclick="clearDashFilters()" style="background:#ff4444; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; transition:opacity 0.2s;">Clear Filters</button>
+                    </div>
+                </div>
+
                 <div id="dashStatsGrid" class="stat-grid">Loading stats...</div>
                 
                 <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; margin-bottom:30px;">
@@ -2184,15 +2200,9 @@
                         <canvas id="categoryChart"></canvas>
                     </div>
                 </div>
-
-                <div style="background:#f9f9f9; padding:20px; border-radius:12px;">
-                    <h3 style="margin-top:0;">Quick Filters</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                        <label>From: <input type="date" id="analysisFromDate" onchange="updateDashOverview()"></label>
-                        <label>To: <input type="date" id="analysisToDate" onchange="updateDashOverview()"></label>
-                        <button onclick="clearDashFilters()" style="background:#ff4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Clear</button>
-                    </div>
-                </div>
+                <br>
+                <br>
+                <br>
             `;
             updateDashOverview();
         }
@@ -2672,14 +2682,29 @@
         // البحث المباشر
         window.currentSearchTerm = '';
         const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
+
         if (searchInput) {
             searchInput.addEventListener('input', function () {
                 window.currentSearchTerm = this.value;
-                // ابحث عن القسم الحالي
+                if (clearBtn) clearBtn.style.display = this.value ? 'block' : 'none';
+
+                // البحث دائما في سياق القسم المختار، لكن الفركشن نفسه يدعم البحث العالمي
                 const activeSection = document.querySelector('.navbar li.active')?.getAttribute('data-section') || 'trending';
                 renderProductsSection(activeSection);
             });
         }
+
+        window.clearSearchInput = function () {
+            if (searchInput) {
+                searchInput.value = '';
+                window.currentSearchTerm = '';
+                if (clearBtn) clearBtn.style.display = 'none';
+                const activeSection = document.querySelector('.navbar li.active')?.getAttribute('data-section') || 'trending';
+                renderProductsSection(activeSection);
+                searchInput.focus();
+            }
+        };
         // زر واتساب العائم
         const whatsappBtn = document.getElementById('whatsappBtn');
         if (whatsappBtn) {
@@ -2819,7 +2844,7 @@
                 const isTrending = p.isTrending || p.type === 'Trending';
                 const isInCart = cart.some(item => item.name === p.name && item.type === p.type);
                 return isTrending && !p.hidden && !isInCart;
-            }).slice(0, 5);
+            }).slice(0, 10);
 
             if (recProducts.length === 0) return;
 
@@ -3243,7 +3268,7 @@
             }
 
             html += `<div style='max-width:600px; margin:0 auto;' id='myOrdersContainer'>
-                <div style='font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; color:#784fe7; font-weight:bold; text-align:left;'>Orders (Last 10 Days)</div>
+                <div style='font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; color:#784fe7; font-weight:bold; text-align:center;'>Orders (Last 10 Days)</div>
                 <div id="profileLoadingMsg" style='text-align:center; padding: 20px;'>Loading orders...</div>
             </div>`;
             container.innerHTML = html;
@@ -3254,7 +3279,7 @@
             const ordersRef = firebase.database().ref('orders');
             ordersRef.once('value', snapshot => {
                 const allOrders = snapshot.val() || {};
-                let ordersHtml = `<div style='font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; color:#784fe7; font-weight:bold; text-align:left;'>Orders (Last 10 Days)</div>`;
+                let ordersHtml = `<div style='font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; color:#784fe7; font-weight:bold; text-align:center;'>Orders (Last 10 Days)</div>`;
 
                 let foundOrders = false;
                 const tenDaysAgo = new Date();
