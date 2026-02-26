@@ -4,29 +4,17 @@
     box-sizing: border-box;
 }
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
     color: #333;
-    display: flex;
-    flex-direction: column;
 }
 
 .container {
-    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
 }
 
 header {
@@ -147,9 +135,6 @@ header p {
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    flex: 1;
     overflow: hidden;
 }
 
@@ -204,11 +189,9 @@ header p {
 }
 
 .chat-container {
-    height: calc(100vh - 250px);
-    /* مساحة افتراضية للشاشات الكبيرة */
+    height: 500px;
     display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
 .chat-messages {
@@ -216,8 +199,6 @@ header p {
     padding: 20px;
     overflow-y: auto;
     background: #f8f9fa;
-    min-height: 0;
-    /* Ensures flex container can shrink properly */
 }
 
 .message {
@@ -307,6 +288,15 @@ header p {
     white-space: nowrap;
 }
 
+/* تنسيق الصور داخل رسائل المحادثة لتكون متجاوبة */
+.message-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    display: block;
+}
+
 /* دعم single-line على مستوى الحاوية الجديدة */
 .message-body.single-line {
     white-space: nowrap;
@@ -333,14 +323,14 @@ header p {
     padding: 20px;
     background: white;
     border-top: 1px solid #e0e0e0;
-    margin-top: auto;
-    /* يجبر الحقل على النزول لأسفل الشاشة */
 }
 
 .chat-input {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
+    /* السماح بالتفاف العناصر في الشاشات الصغيرة جدًا */
 }
 
 .chat-input input {
@@ -510,34 +500,14 @@ header p {
     }
 }
 
-/* الاستجابة التامة للشاشات (Responsive Design) */
 @media (max-width: 768px) {
-
-    html,
-    body {
-        height: 100%;
-        /* دعم الشاشات بدون استخدام dvh في كل المتصفحات */
-        height: -webkit-fill-available;
-        overflow: hidden;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
     .container {
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+        padding: 5px;
+        /* تقليل الحواف أكثر للهواتف */
     }
 
     header {
-        margin-bottom: 5px;
-        padding-top: 10px;
-        flex-shrink: 0;
+        margin-bottom: 15px;
     }
 
     header h1 {
@@ -546,132 +516,78 @@ header p {
 
     .upload-section {
         padding: 15px;
-        margin-bottom: 0;
-        flex: 1;
-        overflow-y: auto;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        margin-bottom: 15px;
     }
 
     .upload-area {
         padding: 30px 10px;
     }
 
-    /* تحويل الأزرار بشكل عمودي بدلاً من أفقي */
     .upload-btn {
-        display: block;
-        width: 100%;
-        margin: 10px 0 !important;
+        padding: 10px 15px;
         font-size: 0.9rem;
-    }
-
-    .chat-section {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        border-radius: 0;
-        /* جعل الحافة السفلية مستقيمة لتلتصق تماماً */
-        margin: 0;
-        box-shadow: none;
-    }
-
-    .chat-header {
-        padding: 15px;
+        margin-bottom: 10px;
+        width: 100%;
+        /* أزرار الرفع تأخذ العرض بالكامل */
+        margin-right: 0 !important;
     }
 
     .chat-container {
-        flex: 1;
-        height: auto;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        /* يمنع المحتويات من دفع مربع النص خارج الشاشة */
+        height: 60vh;
+        /* استخدام نسبة الشاشة لضمان الملاءمة */
+        min-height: 400px;
     }
 
     .message-content {
-        max-width: 90%;
-        /* توسيع الفقاعة */
+        max-width: 95%;
+        /* استغلال مساحة أكبر للرسائل */
         font-size: 0.95rem;
-        /* تصغير الخط قليلاً */
-        padding: 10px 12px;
     }
 
     .chat-controls {
-        flex-direction: row;
-        gap: 8px;
+        flex-direction: column;
+        gap: 5px;
     }
 
     .clear-chat-btn,
     .new-file-btn {
         font-size: 0.8rem;
-        padding: 6px 10px;
+        padding: 6px 12px;
     }
 
+    /* تحسينات إدخال المحادثة للهواتف */
     .chat-input-container {
-        padding: 10px 15px;
-        background: #f8f9fa;
-        border-top: 1px solid #ddd;
-        border-radius: 0;
-        /* ضمان زوايا سفلية مستقيمة */
-        margin-bottom: 0px;
-        padding-bottom: env(safe-area-inset-bottom, 10px);
+        padding: 10px;
     }
 
-    /* أزرار الإدخال تتطلب مساحة، لنوسع الصندوق */
     .chat-input {
         gap: 5px;
     }
 
     .chat-input input {
-        font-size: 1rem;
         padding: 10px 12px;
+        font-size: 1rem;
+        width: 100%;
+        order: 1;
+        /* جعل حقل النص الأول */
     }
 
-    .chat-input button {
+    /* أزرار الإدخال (صورة، ميكروفون، إرسال) في سطر جديد تحت حقل النص */
+    .chat-input>button {
+        order: 2;
         width: 40px;
         height: 40px;
-        padding: 10px;
-    }
-}
-
-/* شاشات الهواتف الأصغر (Mobile Phones) */
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 1.5rem;
+        padding: 8px;
     }
 
-    .chat-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-
-    .chat-controls {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .message-content {
-        max-width: 95%;
-        /* أقصى عرض للفقاعة */
-    }
-
-    /* تصغير أزرار الإرسال والمرفقات لتناسب العرض */
-    .chat-input button {
-        width: 35px;
-        height: 35px;
+    #micTimer {
+        order: 2;
         font-size: 0.9rem;
     }
 
-    .chat-input input {
-        font-size: 0.9rem;
-    }
-
-    /* تصغير الجدول أكثر */
-    .chat-table th,
-    .chat-table td {
-        padding: 6px 3px;
-        font-size: 0.75rem;
+    /* معاينة الصورة المرفوعة */
+    #imagePreviewContainer img#imagePreview {
+        max-height: 80px;
+        /* تصغير المعاينة قليلاً */
     }
 }
