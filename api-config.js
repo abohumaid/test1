@@ -1,7 +1,7 @@
 // ملف تكوين API للذكاء الاصطناعي
 // تحديث لدعم OpenRouter فقط بشكل افتراضي
 
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = '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';
 // const OPENROUTER_MODEL = 'openai/gpt-3.5-turbo';
 // const OPENROUTER_MODEL = 'openai/gpt-4-1106-preview';
 // const OPENROUTER_MODEL = 'openai/gpt-oss-20b:free';
@@ -213,7 +213,9 @@ async function testConnection() {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'HTTP-Referer': SITE_URL,
+        'X-Title': SITE_NAME
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
