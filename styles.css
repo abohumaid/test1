@@ -507,8 +507,9 @@ header p {
     }
 
     .chat-container {
-        height: 400px;
-        /* تقليل الارتفاع على الموبايل ليناسب الشاشة */
+        height: 80vh;
+        /* يجعل الشات يأخذ 80% من طول شاشة الموبايل بدلاً من رقم ثابت */
+        min-height: 400px;
     }
 
     .message-content {
