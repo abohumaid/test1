@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Chat Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- <h1>Ahmed Mohamed <i class="fas fa-robot"></i></h1> -->
+            <h1> iSON Xperiences<i class="fas fa-robot"></i></h1>
+        </header>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>اسحب وأفلت ملف نصي أو Word هنا</h3>
+                <p>أو انقر لاختيار ملف (.txt أو .docx)</p>
+                <input type="file" id="fileInput" accept=".txt,.docx" hidden>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    اختر ملف
+                </button>
+                <button class="upload-btn" style="background: #f5e960; color: #333; margin-right:10px" onclick="chooseJsonFromProject()">
+                    <i class="fas fa-database"></i> قاعدة بيانات JSON
+                </button>
+                <button class="upload-btn" style="background: #dc3545; color: white; margin-right:10px" onclick="runDiagnosticCheck()">
+                    <i class="fas fa-stethoscope"></i> فحص المشاكل
+                </button>
+            </div>
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-details">
+                    <i class="fas fa-file-alt"></i>
+                    <span id="fileName"></span>
+                    <span id="fileSize"></span>
+                </div>
+                <button class="process-btn" id="processBtn">معالجة الملف</button>
+            </div>
+        </div>
+
+        <div class="chat-section" id="chatSection" style="display: none;">
+            <div class="chat-header">
+                <h3><i class="fas fa-comments"></i> Chats</h3>
+                <div class="chat-controls">
+                    <button class="clear-chat-btn" onclick="clearChat()" title="مسح المحادثة">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="new-file-btn" onclick="resetApp()">
+                        <i class="fas fa-plus"></i> Add File 
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <i class="fas fa-robot"></i>
+                            <p>Welcome to the Chatbot !</p>
+                            <!-- <p>مرحباً! لقد تم رفع الملف بنجاح. يمكنك الآن طرح أي سؤال حول محتوى الملف.</p> -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div id="imagePreviewContainer" style="display: none; padding: 10px; border-bottom: 1px solid #eee; position: relative;">
+                        <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; border-radius: 8px;">
+                        <button onclick="clearImagePreview()" style="position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="... اكتب سؤالك هنا أو ارفع صورة لنبات" autocomplete="off">
+                        <input type="file" id="imageInput" accept="image/*" hidden onchange="handleImageSelect(event)">
+                        <button id="imageBtn" onclick="document.getElementById('imageInput').click()" title="إرفاق صورة">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button id="micBtn" title="تسجيل صوتي">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <span id="micTimer" style="margin: 0 8px; color: orangered; display: none; font-weight:bold">0</span>
+                        <button id="sendBtn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>جاري المعالجة...</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
