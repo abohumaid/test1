@@ -1,100 +1,2271 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Chat Bot</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Programming Language — Interactive Masterclass Presentation</title>
+  <meta name="description"
+    content="A visual presentation on the C++ programming language, covering programming fundamentals, C++ architecture, real-world applications, variables, if/else logic, and interactive quiz.">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <!-- <h1>Ahmed Mohamed <i class="fas fa-robot"></i></h1> -->
-            <h1> iSON Xperiences<i class="fas fa-robot"></i></h1>
-        </header>
 
-        <div class="upload-section" id="uploadSection">
-            <div class="upload-area" id="uploadArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <h3>اسحب وأفلت ملف نصي أو Word هنا</h3>
-                <p>أو انقر لاختيار ملف (.txt أو .docx)</p>
-                <input type="file" id="fileInput" accept=".txt,.docx" hidden>
-                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                    اختر ملف
-                </button>
-                <button class="upload-btn" style="background: #f5e960; color: #333; margin-right:10px" onclick="chooseJsonFromProject()">
-                    <i class="fas fa-database"></i> قاعدة بيانات JSON
-                </button>
-                <button class="upload-btn" style="background: #dc3545; color: white; margin-right:10px" onclick="runDiagnosticCheck()">
-                    <i class="fas fa-stethoscope"></i> فحص المشاكل
-                </button>
+  <!-- Ambient Glowing Tech Background -->
+  <div class="ambient-bg">
+    <div class="ambient-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+  <div id="app">
+
+    <!-- Top Presentation Header Bar -->
+    <header class="top-bar">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">C++</div>
+        <span class="brand-text">C++ Programming Language</span>
+      </div>
+
+      <!-- Utility Actions -->
+      <div class="top-actions">
+        <!-- Pen Tool with Long-Press Color Palette -->
+        <div class="tool-dropdown-wrapper">
+          <button class="action-btn" id="btnPen" title="Pen Tool (Click to draw, Long-press to choose color)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 19l7-7 3 3-7 7-3-3z" />
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+              <path d="M2 2l7.586 7.586" />
+              <circle cx="11" cy="11" r="2" />
+            </svg>
+            <span class="color-dot-indicator" id="penColorDot"></span>
+            <span>Pen</span>
+          </button>
+
+          <!-- Color & Size Palette Popup (Triggered on Long-Press) -->
+          <div class="color-palette-popup" id="colorPalettePopup">
+            <div class="palette-header">
+              <span>Pen Color & Size</span>
+              <span class="palette-hint">Long-press to change</span>
             </div>
-            <div class="file-info" id="fileInfo" style="display: none;">
-                <div class="file-details">
-                    <i class="fas fa-file-alt"></i>
-                    <span id="fileName"></span>
-                    <span id="fileSize"></span>
-                </div>
-                <button class="process-btn" id="processBtn">معالجة الملف</button>
+            <div class="palette-colors">
+              <button class="color-chip active" data-color="#00f0ff" style="--c: #00f0ff;" title="Neon Cyan"></button>
+              <button class="color-chip" data-color="#10b981" style="--c: #10b981;" title="Emerald Green"></button>
+              <button class="color-chip" data-color="#fbbf24" style="--c: #fbbf24;" title="Neon Yellow"></button>
+              <button class="color-chip" data-color="#f43f5e" style="--c: #f43f5e;" title="Crimson Red"></button>
+              <button class="color-chip" data-color="#a855f7" style="--c: #a855f7;" title="Purple"></button>
+              <button class="color-chip" data-color="#ffffff" style="--c: #ffffff;" title="White"></button>
             </div>
+            <div class="palette-sizes">
+              <button class="size-chip" data-size="2">Thin</button>
+              <button class="size-chip active" data-size="4">Medium</button>
+              <button class="size-chip" data-size="8">Thick</button>
+            </div>
+          </div>
         </div>
 
-        <div class="chat-section" id="chatSection" style="display: none;">
-            <div class="chat-header">
-                <h3><i class="fas fa-comments"></i> Chats</h3>
-                <div class="chat-controls">
-                    <button class="clear-chat-btn" onclick="clearChat()" title="مسح المحادثة">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="new-file-btn" onclick="resetApp()">
-                        <i class="fas fa-plus"></i> Add File 
-                    </button>
-                </div>
+        <!-- Eraser Tool -->
+        <button class="action-btn" id="btnEraser" title="Eraser Tool (Click to erase drawings)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 20H7L2 15a2.828 2.828 0 0 1 0-4l9-9a2.828 2.828 0 0 1 4 0l5 5a2.828 2.828 0 0 1 0 4l-5 5" />
+            <line x1="18" y1="18" x2="6" y2="18" />
+          </svg>
+          <span>Eraser</span>
+        </button>
+
+        <!-- Clear Canvas Tool -->
+        <button class="action-btn" id="btnClearDraw" title="Clear Screen (Wipe all drawings on page)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          <span>Clear</span>
+        </button>
+
+        <!-- Presentation Countdown Timer -->
+        <div class="tool-dropdown-wrapper" id="timerDropdownWrapper">
+          <button class="action-btn" id="btnTimer" title="Presentation Countdown Timer (Click to set & start)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span id="timerDisplay">Timer</span>
+            <span class="kbd-shortcut">T</span>
+          </button>
+
+          <!-- Timer Controls & Presets Popup -->
+          <div class="timer-popup" id="timerPopup">
+            <div class="timer-popup-header">
+              <div class="timer-popup-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)"
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Presentation Timer</span>
+              </div>
+              <span class="timer-status-badge" id="timerStatusBadge">Ready</span>
             </div>
-            
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot-message">
-                        <div class="message-content">
-                            <i class="fas fa-robot"></i>
-                            <p>Welcome to the Chatbot !</p>
-                            <!-- <p>مرحباً! لقد تم رفع الملف بنجاح. يمكنك الآن طرح أي سؤال حول محتوى الملف.</p> -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chat-input-container">
-                    <div id="imagePreviewContainer" style="display: none; padding: 10px; border-bottom: 1px solid #eee; position: relative;">
-                        <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; border-radius: 8px;">
-                        <button onclick="clearImagePreview()" style="position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
-                    </div>
-                    <div class="chat-input">
-                        <input type="text" id="messageInput" placeholder="... اكتب سؤالك هنا أو ارفع صورة لنبات" autocomplete="off">
-                        <input type="file" id="imageInput" accept="image/*" hidden onchange="handleImageSelect(event)">
-                        <button id="imageBtn" onclick="document.getElementById('imageInput').click()" title="إرفاق صورة">
-                            <i class="fas fa-image"></i>
-                        </button>
-                        <button id="micBtn" title="تسجيل صوتي">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                        <span id="micTimer" style="margin: 0 8px; color: orangered; display: none; font-weight:bold">0</span>
-                        <button id="sendBtn" onclick="sendMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
+
+            <!-- Big Digital Countdown Display -->
+            <div class="timer-big-display" id="timerBigDisplay">
+              <span id="timerHours">00</span>:<span id="timerMinutes">30</span>:<span id="timerSeconds">00</span>
             </div>
+
+            <!-- Quick Presets -->
+            <div class="timer-section-label">Quick Presets</div>
+            <div class="timer-presets-grid">
+              <button class="timer-preset-btn" data-minutes="15">
+                <span class="preset-time">15m</span>
+                <span class="preset-sub">15 Min</span>
+              </button>
+              <button class="timer-preset-btn active" data-minutes="30">
+                <span class="preset-time">30m</span>
+                <span class="preset-sub">30 Min</span>
+              </button>
+              <button class="timer-preset-btn" data-minutes="45">
+                <span class="preset-time">45m</span>
+                <span class="preset-sub">45 Min</span>
+              </button>
+              <button class="timer-preset-btn" data-minutes="60">
+                <span class="preset-time">1h</span>
+                <span class="preset-sub">1 Hour</span>
+              </button>
+              <button class="timer-preset-btn" data-minutes="90">
+                <span class="preset-time">1.5h</span>
+                <span class="preset-sub">1.5 Hours</span>
+              </button>
+              <button class="timer-preset-btn" data-minutes="120">
+                <span class="preset-time">2h</span>
+                <span class="preset-sub">2 Hours</span>
+              </button>
+            </div>
+
+            <!-- Custom Duration Input -->
+            <div class="timer-section-label">Custom Duration</div>
+            <div class="timer-custom-inputs">
+              <div class="timer-input-group">
+                <input type="number" id="inputTimerHours" min="0" max="23" value="0" placeholder="0">
+                <label>Hours</label>
+              </div>
+              <span class="timer-input-colon">:</span>
+              <div class="timer-input-group">
+                <input type="number" id="inputTimerMinutes" min="0" max="59" value="30" placeholder="30">
+                <label>Minutes</label>
+              </div>
+              <button class="timer-set-btn" id="btnSetCustomTimer">Set</button>
+            </div>
+
+            <!-- Timer Action Buttons -->
+            <div class="timer-actions-row">
+              <button class="timer-ctrl-btn btn-timer-start" id="btnTimerStart">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span id="timerStartLabel">Start</span>
+              </button>
+              <button class="timer-ctrl-btn btn-timer-pause" id="btnTimerPause" disabled>
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                <span>Pause</span>
+              </button>
+              <button class="timer-ctrl-btn btn-timer-reset" id="btnTimerReset">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                <span>Reset</span>
+              </button>
+            </div>
+
+            <div class="timer-footer-note">
+              <span>● Continuous countdown persists across page reloads</span>
+            </div>
+          </div>
         </div>
 
-        <div class="loading" id="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>جاري المعالجة...</p>
-        </div>
+        <button class="action-btn" id="btnSound" title="Toggle audio sound effects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+          <span id="soundLabel">Sound</span>
+        </button>
+        <button class="action-btn" id="btnWhiteboard" title="Toggle Whiteboard & Notes (B)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="13" rx="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="16" x2="12" y2="21" />
+            <line x1="6" y1="13" x2="18" y2="13" />
+          </svg>
+          <span>Whiteboard</span>
+          <span class="kbd-shortcut">B</span>
+        </button>
+        <button class="action-btn" id="btnFullscreen" title="Toggle Fullscreen (F)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+          </svg>
+          <span>Fullscreen</span>
+          <span class="kbd-shortcut">F</span>
+        </button>
+        <button class="action-btn" id="btnMouseMode"
+          title="Mouse Navigation: Left-Click = Next, Right-Click = Prev (M)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="6" y="2" width="12" height="20" rx="6" />
+            <line x1="12" y1="2" x2="12" y2="9" />
+            <line x1="6" y1="9" x2="18" y2="9" />
+          </svg>
+          <span id="mouseModeLabel">Mouse Mode</span>
+          <span class="kbd-shortcut">M</span>
+        </button>
+        <button class="action-btn" id="btnPPoint" title="Switch to PowerPoint Screen View (P)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+          </svg>
+          <span id="pPointLabel">p.point</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Top Linear Progress Line -->
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progressBar"></div>
     </div>
 
-    <script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
-    <script src="api-config.js"></script>
-    <script src="script.js"></script>
+    <!-- Presentation Workspace (Flex Container for Slides + PowerPoint Sidebar) -->
+    <div class="presentation-workspace" id="presentationWorkspace">
+      <!-- Left PowerPoint Slide Thumbnails Sidebar (Visible in p.point mode) -->
+      <aside class="pptx-sidebar" id="pptxSidebar">
+        <div class="pptx-sidebar-header">
+          <div class="pptx-brand-indicator">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="2" y="2" width="20" height="20" rx="4" fill="#d24726" />
+              <path d="M9 17V7h4.5a3 3 0 0 1 0 6H9" stroke="#fff" stroke-width="2" fill="none" />
+            </svg>
+            <span>Slides</span>
+          </div>
+          <div class="pptx-header-actions">
+            <span class="pptx-sidebar-counter" id="pptxSidebarCounter">1 / 10</span>
+            <button class="pptx-close-btn" id="pptxCloseBtn" title="Close PowerPoint View (Esc)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="pptx-thumbs-list" id="pptxThumbsList">
+          <!-- Slide 1 Thumbnail (About Me - Opening Slide) -->
+          <div class="pptx-thumb-item active" data-slide-index="0">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">1</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s-about">
+                <span class="p-badge emerald">Speaker</span>
+                <span class="p-title">Eng. Ahmed Mohamed</span>
+                <span class="p-subtitle">Full Stack &amp; CS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2 Thumbnail (Learning Roadmap & Timeline) -->
+          <div class="pptx-thumb-item" data-slide-index="1">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">2</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s-timeline">
+                <span class="p-badge cyan">Roadmap</span>
+                <span class="p-title">Learning Timeline</span>
+                <span class="p-subtitle">6 Course Milestones</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3 Thumbnail (Intro to Programming) -->
+          <div class="pptx-thumb-item" data-slide-index="2">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">3</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s2">
+                <span class="p-badge blue">Intro</span>
+                <span class="p-title">Intro to Programming</span>
+                <span class="p-subtitle">Bilingual &amp; Daily Life</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4 Thumbnail (Programming Languages Comparison) -->
+          <div class="pptx-thumb-item" data-slide-index="3">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">4</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s-tree">
+                <span class="p-badge cyan">Comparison</span>
+                <span class="p-title">Languages Comparison</span>
+                <span class="p-subtitle">C# · C++ · C</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 5 Thumbnail (C++ Masterclass Title) -->
+          <div class="pptx-thumb-item" data-slide-index="4">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">5</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s1">
+                <span class="p-badge cyan">C++</span>
+                <span class="p-title">C++ Programming</span>
+                <span class="p-subtitle">Direct Silicon Core</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 6 Thumbnail (Intro to C++) -->
+          <div class="pptx-thumb-item" data-slide-index="5">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">6</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s3">
+                <span class="p-badge purple">Core</span>
+                <span class="p-title">Introduction to C++</span>
+                <span class="p-subtitle">Speed &amp; Real Applications</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 7 Thumbnail (Cout & Cin) -->
+          <div class="pptx-thumb-item" data-slide-index="6">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">7</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s3" style="border-left: 3px solid #6366f1;">
+                <span class="p-badge blue"
+                  style="background: rgba(99,102,241,0.2); color:#a5b4fc; border-color: rgba(99,102,241,0.4);">I/O
+                  Streams</span>
+                <span class="p-title">Cout &lt;&lt; &amp; Cin &gt;&gt;</span>
+                <span class="p-subtitle">Standard Input &amp; Output</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 8 Thumbnail (Variables) -->
+          <div class="pptx-thumb-item" data-slide-index="7">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">8</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s4">
+                <span class="p-badge cyan">RAM</span>
+                <span class="p-title">Variables in C++</span>
+                <span class="p-subtitle">Data Types &amp; Memory</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 9 Thumbnail (If Statement Diagram) -->
+          <div class="pptx-thumb-item" data-slide-index="8">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">9</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s5">
+                <span class="p-badge amber">Flow</span>
+                <span class="p-title">If Statement in C++</span>
+                <span class="p-subtitle">Branching Logic &amp; Syntax</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 10 Thumbnail (If Code Examples) -->
+          <div class="pptx-thumb-item" data-slide-index="9">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">10</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s5">
+                <span class="p-badge cyan">Code</span>
+                <span class="p-title">If in Action (Code)</span>
+                <span class="p-subtitle">Simple C++ Examples</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 11 Thumbnail (Quiz) -->
+          <div class="pptx-thumb-item" data-slide-index="10">
+            <div class="pptx-thumb-meta">
+              <span class="pptx-thumb-num">11</span>
+              <span class="pptx-thumb-star">★</span>
+            </div>
+            <div class="pptx-thumb-card">
+              <div class="pptx-thumb-preview p-s6">
+                <span class="p-badge emerald">Quiz</span>
+                <span class="p-title">Questions &amp; Quiz</span>
+                <span class="p-subtitle">3 Interactive Questions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Viewport for Slides -->
+      <main class="slides-viewport">
+        <!-- Drawing Canvas Overlay -->
+        <canvas id="drawingCanvas"></canvas>
+
+
+        <!-- ====================================================================
+           SLIDE 1: ABOUT THE PRESENTER / SPEAKER PROFILE (CENTERED FIRST SLIDE)
+           ==================================================================== -->
+        <section class="slide active" id="slide-0" data-index="0">
+          <div class="intro-centered-container">
+
+            <!-- Glowing Avatar Frame -->
+            <div class="intro-avatar-outer">
+              <div class="intro-avatar-ring">
+                <img src="assets/EngAhmed.jpeg" alt="Eng. Ahmed Mohamed" class="intro-avatar-img">
+              </div>
+            </div>
+
+            <!-- Presenter Name & Headline -->
+            <div class="intro-name-wrap">
+              <h1 class="intro-title">Eng. Ahmed Mohamed</h1>
+              <div class="intro-subtitle">Full Stack Web Developer &amp; Computer Science Engineer</div>
+            </div>
+
+            <!-- Two Main Highlights Cards (Education & Career) -->
+            <div class="intro-cards-row">
+
+              <!-- Education Card -->
+              <div class="intro-info-card cyan-glow">
+                <div class="intro-card-icon-wrap cyan">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
+                </div>
+                <div class="intro-card-text">
+                  <span class="intro-card-category">Academic Degree</span>
+                  <h3 class="intro-card-headline">Computer Science</h3>
+                  <p class="intro-card-sub">6th of October University</p>
+                </div>
+              </div>
+
+              <!-- Current Position Card -->
+              <div class="intro-info-card emerald-glow">
+                <div class="intro-card-icon-wrap emerald">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </div>
+                <div class="intro-card-text">
+                  <span class="intro-card-category">Current Role</span>
+                  <h3 class="intro-card-headline">Full Stack Web Developer</h3>
+                  <p class="intro-card-sub">ISON Xperiences</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+           SLIDE 2: COURSE ROADMAP & LEARNING TIMELINE (5 STATIONS)
+           ==================================================================== -->
+        <section class="slide" id="slide-1" data-index="1">
+          <div class="slide-header">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">
+                Lecture Learning Timeline
+              </h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="timeline-milestone-stage">
+
+              <!-- Connecting Zigzag Circuit Cable with Glowing Animated Beam -->
+              <div class="timeline-track-container">
+                <svg class="timeline-zigzag-svg" viewBox="0 0 1000 360" fill="none" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="zigzagGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#00f0ff" />
+                      <stop offset="20%" stop-color="#3b82f6" />
+                      <stop offset="40%" stop-color="#6366f1" />
+                      <stop offset="60%" stop-color="#10b981" />
+                      <stop offset="80%" stop-color="#f59e0b" />
+                      <stop offset="100%" stop-color="#a855f7" />
+                    </linearGradient>
+                    <filter id="zigzagGlow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00f0ff" flood-opacity="0.6" />
+                    </filter>
+                  </defs>
+                  <!-- Subtle Background Zigzag Line -->
+                  <path class="zigzag-bg-path" d="M 83 85 L 250 275 L 417 85 L 583 275 L 750 85 L 917 275"
+                    stroke="rgba(255,255,255,0.09)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                  <!-- Glowing Gradient Zigzag Line -->
+                  <path class="zigzag-glow-path" d="M 83 85 L 250 275 L 417 85 L 583 275 L 750 85 L 917 275"
+                    stroke="url(#zigzagGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
+                    filter="url(#zigzagGlow)" />
+                  <!-- Animated Traveling Laser Beam -->
+                  <path class="zigzag-beam-path" d="M 83 85 L 250 275 L 417 85 L 583 275 L 750 85 L 917 275"
+                    stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-dasharray="90 360" />
+                </svg>
+
+                <!-- 6 Milestone Station Cards Grid (Zigzag Alternating Layout) -->
+                <div class="timeline-stations-row timeline-zigzag-grid">
+
+                  <!-- Station 1: Intro to Programming -->
+                  <div class="timeline-station-card st-1 zigzag-top" onclick="goToSlide(2)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill cyan">Station 01</span>
+                      <div class="station-node-dot cyan">1</div>
+                    </div>
+                    <div class="station-title-en">Intro to Programming</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Station 2: Intro to C++ -->
+                  <div class="timeline-station-card st-2 zigzag-bottom" onclick="goToSlide(5)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill blue">Station 02</span>
+                      <div class="station-node-dot blue">2</div>
+                    </div>
+                    <div class="station-title-en">Intro to C++</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Station 3: Cout << , Cin >> -->
+                  <div class="timeline-station-card st-3 zigzag-top" onclick="goToSlide(6)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill indigo">Station 03</span>
+                      <div class="station-node-dot indigo">3</div>
+                    </div>
+                    <div class="station-title-en">Cout &lt;&lt; , Cin &gt;&gt;</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Station 4: Variables in C++ -->
+                  <div class="timeline-station-card st-4 zigzag-bottom" onclick="goToSlide(7)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill emerald">Station 04</span>
+                      <div class="station-node-dot emerald">4</div>
+                    </div>
+                    <div class="station-title-en">Variables in C++</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Station 5: If Condition -->
+                  <div class="timeline-station-card st-5 zigzag-top" onclick="goToSlide(8)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill amber">Station 05</span>
+                      <div class="station-node-dot amber">5</div>
+                    </div>
+                    <div class="station-title-en">If Condition</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Station 6: Questions & Quiz -->
+                  <div class="timeline-station-card st-6 zigzag-bottom" onclick="goToSlide(10)">
+                    <div class="station-top-node">
+                      <span class="station-step-pill purple">Station 06</span>
+                      <div class="station-node-dot purple">6</div>
+                    </div>
+                    <div class="station-title-en">Questions &amp; Quiz</div>
+                    <div class="station-jump-indicator">
+                      <span>Jump to Module</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+           SLIDE 3: INTRODUCTION TO PROGRAMMING & DAILY LIFE IMPACT (BILINGUAL)
+           ==================================================================== -->
+        <section class="slide" id="slide-2" data-index="2">
+          <div class="slide-header">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">
+                Introduction to Programming
+              </h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="intro-prog-layout">
+
+              <!-- 3-Step Execution Pipeline (Full Width Banner) -->
+              <div class="concept-pipeline-card">
+                <div class="section-mini-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                  <span>How Programming Works // كيف تعمل البرمجة؟</span>
+                </div>
+
+                <div class="pipeline-steps-row">
+                  <div class="pipeline-box">
+                    <div class="pipeline-icon-circle cyan">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                          d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z" />
+                        <line x1="10" y1="21" x2="14" y2="21" />
+                      </svg>
+                    </div>
+                    <div class="pipeline-title">1. Human Logic</div>
+                    <div class="ar-step-sub">التفكير وحل المشكلات</div>
+                  </div>
+
+                  <div class="pipeline-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </div>
+
+                  <div class="pipeline-box">
+                    <div class="pipeline-icon-circle blue">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                      </svg>
+                    </div>
+                    <div class="pipeline-title">2. Code Writing</div>
+                    <div class="ar-step-sub">كتابة الأوامر البرمجية</div>
+                  </div>
+
+                  <div class="pipeline-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </div>
+
+                  <div class="pipeline-box">
+                    <div class="pipeline-icon-circle emerald">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <rect x="9" y="9" width="6" height="6" />
+                        <line x1="9" y1="1" x2="9" y2="4" />
+                        <line x1="15" y1="1" x2="15" y2="4" />
+                        <line x1="9" y1="20" x2="9" y2="23" />
+                        <line x1="15" y1="20" x2="15" y2="23" />
+                        <line x1="20" y1="9" x2="23" y2="9" />
+                        <line x1="20" y1="14" x2="23" y2="14" />
+                        <line x1="1" y1="9" x2="4" y2="9" />
+                        <line x1="1" y1="14" x2="4" y2="14" />
+                      </svg>
+                    </div>
+                    <div class="pipeline-title">3. Run Code</div>
+                    <div class="ar-step-sub">تشغيل وتنفيذ الكود</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Importance Section Header -->
+              <div class="section-mini-title importance-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)"
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                <span>Importance in Our Daily Life</span>
+              </div>
+
+              <!-- Centerpiece Surrounding Stage: Left Cards | Center Image | Right Cards -->
+              <div class="importance-surround-stage">
+
+                <!-- Left Column: 2 Pillars -->
+                <div class="importance-col left-col">
+                  <!-- Card 1: Smart Devices & Apps -->
+                  <div class="impact-card point-right st-smart">
+                    <div class="impact-icon-wrap cyan">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                      </svg>
+                    </div>
+                    <div class="impact-info">
+                      <h4>Smart Devices &amp; Apps</h4>
+                    </div>
+                    <div class="card-pointer-arrow right cyan">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Card 3: Transportation & Navigation -->
+                  <div class="impact-card point-right st-transport">
+                    <div class="impact-icon-wrap purple">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polygon points="3 11 22 2 13 21 11 13 3 11" />
+                      </svg>
+                    </div>
+                    <div class="impact-info">
+                      <h4>Transportation &amp; Navigation</h4>
+                    </div>
+                    <div class="card-pointer-arrow right purple">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Center Column: Glowing Hero Image Showcase with Targeting Laser Pointers -->
+                <div class="importance-center-hero">
+                  <div class="center-image-card">
+                    <img src="assets/programming_daily_life.jpg" alt="Programming Powers Daily Life">
+
+                    <!-- Interactive SVG Laser Pointer Paths Overlay -->
+                    <svg class="image-pointers-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+                      <defs>
+                        <filter id="laserGlowCyan" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00f0ff" flood-opacity="0.9" />
+                        </filter>
+                        <filter id="laserGlowPurple" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#a855f7" flood-opacity="0.9" />
+                        </filter>
+                        <filter id="laserGlowEmerald" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#10b981" flood-opacity="0.9" />
+                        </filter>
+                        <filter id="laserGlowBlue" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#3b82f6" flood-opacity="0.9" />
+                        </filter>
+                      </defs>
+
+                      <!-- 1. Top-Left: Smart Devices & Apps -->
+                      <g class="pointer-line-group target-smart">
+                        <!-- Dark Contrast Shadow Track -->
+                        <line x1="0" y1="135" x2="220" y2="135" stroke="rgba(6, 9, 17, 0.9)" stroke-width="8"
+                          stroke-linecap="round" />
+                        <!-- Vivid Base Neon Line -->
+                        <line x1="0" y1="135" x2="220" y2="135" stroke="#00f0ff" stroke-width="4"
+                          filter="url(#laserGlowCyan)" stroke-linecap="round" />
+                        <!-- Animated Traveling White Laser Pulse -->
+                        <line x1="0" y1="135" x2="220" y2="135" stroke="#ffffff" stroke-width="4.5"
+                          class="laser-beam-anim" stroke-linecap="round" />
+                        <!-- Radar Pulsing Ring -->
+                        <circle cx="220" cy="135" r="22" fill="rgba(0,240,255,0.2)" stroke="#00f0ff" stroke-width="2.5"
+                          class="radar-pulse-ring" />
+                        <!-- Dark Backing Pin -->
+                        <circle cx="220" cy="135" r="11" fill="#060911" stroke="#00f0ff" stroke-width="2.5" />
+                        <!-- Center Glowing Core -->
+                        <circle cx="220" cy="135" r="6" fill="#00f0ff" filter="url(#laserGlowCyan)" />
+                        <circle cx="220" cy="135" r="2.5" fill="#ffffff" />
+                      </g>
+
+                      <!-- 2. Bottom-Left: Transportation & Navigation (EV Car) -->
+                      <g class="pointer-line-group target-transport">
+                        <!-- Dark Contrast Shadow Track -->
+                        <line x1="0" y1="420" x2="250" y2="420" stroke="rgba(6, 9, 17, 0.9)" stroke-width="8"
+                          stroke-linecap="round" />
+                        <!-- Vivid Base Neon Line -->
+                        <line x1="0" y1="420" x2="250" y2="420" stroke="#c084fc" stroke-width="4"
+                          filter="url(#laserGlowPurple)" stroke-linecap="round" />
+                        <!-- Animated Traveling White Laser Pulse -->
+                        <line x1="0" y1="420" x2="250" y2="420" stroke="#ffffff" stroke-width="4.5"
+                          class="laser-beam-anim" stroke-linecap="round" />
+                        <!-- Radar Pulsing Ring -->
+                        <circle cx="250" cy="420" r="22" fill="rgba(168,85,247,0.2)" stroke="#c084fc" stroke-width="2.5"
+                          class="radar-pulse-ring" />
+                        <!-- Dark Backing Pin -->
+                        <circle cx="250" cy="420" r="11" fill="#060911" stroke="#c084fc" stroke-width="2.5" />
+                        <!-- Center Glowing Core -->
+                        <circle cx="250" cy="420" r="6" fill="#a855f7" filter="url(#laserGlowPurple)" />
+                        <circle cx="250" cy="420" r="2.5" fill="#ffffff" />
+                      </g>
+
+                      <!-- 3. Top-Right: AI & Digital World (AI Brain) -->
+                      <g class="pointer-line-group target-ai">
+                        <!-- Dark Contrast Shadow Track -->
+                        <line x1="1000" y1="135" x2="790" y2="135" stroke="rgba(6, 9, 17, 0.9)" stroke-width="8"
+                          stroke-linecap="round" />
+                        <!-- Vivid Base Neon Line -->
+                        <line x1="1000" y1="135" x2="790" y2="135" stroke="#34d399" stroke-width="4"
+                          filter="url(#laserGlowEmerald)" stroke-linecap="round" />
+                        <!-- Animated Traveling White Laser Pulse -->
+                        <line x1="1000" y1="135" x2="790" y2="135" stroke="#ffffff" stroke-width="4.5"
+                          class="laser-beam-anim" stroke-linecap="round" />
+                        <!-- Radar Pulsing Ring -->
+                        <circle cx="790" cy="135" r="22" fill="rgba(16,185,129,0.2)" stroke="#34d399" stroke-width="2.5"
+                          class="radar-pulse-ring" />
+                        <!-- Dark Backing Pin -->
+                        <circle cx="790" cy="135" r="11" fill="#060911" stroke="#34d399" stroke-width="2.5" />
+                        <!-- Center Glowing Core -->
+                        <circle cx="790" cy="135" r="6" fill="#10b981" filter="url(#laserGlowEmerald)" />
+                        <circle cx="790" cy="135" r="2.5" fill="#ffffff" />
+                      </g>
+
+                      <!-- 4. Bottom-Right: Healthcare & Medicine (Robotic Surgery) -->
+                      <g class="pointer-line-group target-health">
+                        <!-- Dark Contrast Shadow Track -->
+                        <line x1="1000" y1="400" x2="760" y2="400" stroke="rgba(6, 9, 17, 0.9)" stroke-width="8"
+                          stroke-linecap="round" />
+                        <!-- Vivid Base Neon Line -->
+                        <line x1="1000" y1="400" x2="760" y2="400" stroke="#60a5fa" stroke-width="4"
+                          filter="url(#laserGlowBlue)" stroke-linecap="round" />
+                        <!-- Animated Traveling White Laser Pulse -->
+                        <line x1="1000" y1="400" x2="760" y2="400" stroke="#ffffff" stroke-width="4.5"
+                          class="laser-beam-anim" stroke-linecap="round" />
+                        <!-- Radar Pulsing Ring -->
+                        <circle cx="760" cy="400" r="22" fill="rgba(59,130,246,0.2)" stroke="#60a5fa" stroke-width="2.5"
+                          class="radar-pulse-ring" />
+                        <!-- Dark Backing Pin -->
+                        <circle cx="760" cy="400" r="11" fill="#060911" stroke="#60a5fa" stroke-width="2.5" />
+                        <!-- Center Glowing Core -->
+                        <circle cx="760" cy="400" r="6" fill="#3b82f6" filter="url(#laserGlowBlue)" />
+                        <circle cx="760" cy="400" r="2.5" fill="#ffffff" />
+                      </g>
+                    </svg>
+
+                  </div>
+                </div>
+
+                <!-- Right Column: 2 Pillars -->
+                <div class="importance-col right-col">
+                  <!-- Card 2: AI & Digital World -->
+                  <div class="impact-card point-left st-ai">
+                    <div class="card-pointer-arrow left emerald">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                      </svg>
+                    </div>
+                    <div class="impact-icon-wrap emerald">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                        <path d="M2 12h20" />
+                      </svg>
+                    </div>
+                    <div class="impact-info">
+                      <h4>AI &amp; Digital World</h4>
+                    </div>
+                  </div>
+
+                  <!-- Card 4: Healthcare & Medicine -->
+                  <div class="impact-card point-left st-health">
+                    <div class="card-pointer-arrow left blue">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                      </svg>
+                    </div>
+                    <div class="impact-icon-wrap blue">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </div>
+                    <div class="impact-info">
+                      <h4>Healthcare &amp; Medicine</h4>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+           SLIDE 4: PROGRAMMING LANGUAGES COMPARISON (C# - C++ - C)
+           ==================================================================== -->
+        <section class="slide" id="slide-3" data-index="3">
+          <div class="slide-header">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">
+                Programming Language Comparison
+              </h2>
+            </div>
+            <div class="slide-header-tags">
+              <span class="tech-tag cyan">C++</span>
+              <span class="tech-tag purple">C#</span>
+              <span class="tech-tag blue">C</span>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="comparison-image-stage">
+              <div class="comparison-image-card">
+                <img src="assets/c++image.png" alt="Programming Language Comparison: C# - C++ - C" class="comparison-img">
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+           SLIDE 5: TITLE SLIDE - C++ MASTERCLASS
+           ==================================================================== -->
+        <section class="slide" id="slide-4" data-index="4">
+          <div class="hero-container">
+            <div class="hero-content">
+              <h1 class="hero-title">
+                C++ Programming
+                <span class="highlight">Language</span>
+              </h1>
+
+              <p class="hero-desc">
+                High-performance systems programming, direct hardware control, and deterministic memory execution.
+              </p>
+
+              <div class="hero-stats-grid">
+                <div class="hero-stat-card">
+                  <div class="stat-value cyan">#1</div>
+                  <div class="stat-label">AAA Gaming &amp; Engines</div>
+                </div>
+                <div class="hero-stat-card">
+                  <div class="stat-value emerald">100%</div>
+                  <div class="stat-label">Hardware Efficiency</div>
+                </div>
+              </div>
+
+              <div class="hero-actions">
+                <button class="btn-primary-glow" onclick="goToSlide(5)">
+                  <span>Start Module 02: Introduction to C++</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="hero-visual-frame">
+              <img src="assets/cpp_hero_tech.jpg" alt="C++ Cybernetic Core" class="hero-img">
+              <div class="hero-image-overlay"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 6: INTRODUCTION TO C++
+           ==================================================================== -->
+        <section class="slide" id="slide-5" data-index="5">
+          <div class="slide-header">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">Introduction to C++</h2>
+              <div class="slide-subtitle">
+                <span>Fast, compiled, statically typed language engineered for extreme performance</span>
+              </div>
+            </div>
+            <div class="slide-header-tags">
+              <span class="tech-tag cyan">Bjarne Stroustrup</span>
+              <span class="tech-tag emerald">Zero Overhead</span>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="cpp-overview-grid">
+
+              <!-- 3-Column Surrounding Stage: Left Cards | Center Showcase Image | Right Cards -->
+              <div class="cpp-apps-surround-stage">
+
+                <!-- Left Column: 2 Domains -->
+                <div class="apps-side-col left-col">
+                  <!-- Card 1: Games -->
+                  <div class="app-box games">
+                    <div class="app-top">
+                      <div class="app-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <polygon points="6 3 18 3 21 16 16 21 8 21 3 16 6 3" />
+                          <line x1="9" y1="12" x2="15" y2="12" />
+                          <line x1="12" y1="9" x2="12" y2="15" />
+                          <circle cx="16.5" cy="10.5" r=".5" fill="currentColor" />
+                        </svg>
+                      </div>
+                      <span class="tech-tag cyan">Graphics &amp; Physics</span>
+                    </div>
+                    <div>
+                      <div class="app-title">AAA Games &amp; Engines</div>
+                      <div class="app-desc">Powering 4K real-time ray tracing, physics engines, and GPU compute
+                        pipelines.</div>
+                      <div class="app-examples">
+                        <span class="app-pill">GTA V</span>
+                        <span class="app-pill">Fortnite</span>
+                        <span class="app-pill">Cyberpunk 2077</span>
+                        <span class="app-pill">Counter-Strike 2</span>
+                        <span class="app-pill">Unreal Engine 5</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card 3: Web Browsers -->
+                  <div class="app-box browser">
+                    <div class="app-top">
+                      <div class="app-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                      </div>
+                      <span class="tech-tag purple">High Throughput</span>
+                    </div>
+                    <div>
+                      <div class="app-title">Web Browsers &amp; JIT</div>
+                      <div class="app-desc">Rendering billions of HTML elements per second and compiling JavaScript code
+                        in real time.</div>
+                      <div class="app-examples">
+                        <span class="app-pill">Google Chrome (V8)</span>
+                        <span class="app-pill">Mozilla Firefox</span>
+                        <span class="app-pill">WebKit</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Center Column: Futuristic C++ Applications Showcase Image -->
+                <div class="apps-center-hero">
+                  <div class="center-image-card">
+                    <img src="assets/cpp_applications_showcase.jpg" alt="C++ Real-World Applications Powerhouse">
+                  </div>
+                </div>
+
+                <!-- Right Column: 2 Domains -->
+                <div class="apps-side-col right-col">
+                  <!-- Card 2: Operating Systems -->
+                  <div class="app-box os">
+                    <div class="app-top">
+                      <div class="app-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                          <line x1="8" y1="21" x2="16" y2="21" />
+                          <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                      </div>
+                      <span class="tech-tag blue">Kernel Space</span>
+                    </div>
+                    <div>
+                      <div class="app-title">Operating Systems</div>
+                      <div class="app-desc">Direct kernel drivers, file systems, low-level thread schedulers, and
+                        hardware interfaces.</div>
+                      <div class="app-examples">
+                        <span class="app-pill">Windows Kernel</span>
+                        <span class="app-pill">macOS Core</span>
+                        <span class="app-pill">Android NDK</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card 4: Aerospace & Embedded -->
+                  <div class="app-box aero">
+                    <div class="app-top">
+                      <div class="app-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <polygon points="12 2 19 21 12 17 5 21 12 2" />
+                        </svg>
+                      </div>
+                      <span class="tech-tag emerald">Mission Critical</span>
+                    </div>
+                    <div>
+                      <div class="app-title">Space &amp; Embedded Systems</div>
+                      <div class="app-desc">Hard real-time embedded controllers where failure is not an option.</div>
+                      <div class="app-examples">
+                        <span class="app-pill">NASA Mars Rovers</span>
+                        <span class="app-pill">SpaceX Flight Code</span>
+                        <span class="app-pill">Tesla Autopilot</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 7: STANDARD INPUT & OUTPUT (COUT << & CIN >>)
+           ==================================================================== -->
+        <section class="slide" id="slide-6" data-index="6">
+          <div class="slide-header no-divider">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">Standard Input &amp; Output Streams</h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="coutcin-layout">
+
+              <!-- Left: Stream Concepts & Components -->
+              <div class="stream-cards-col">
+
+                <!-- Cout Card -->
+                <div class="stream-card cout-card clickable-stream active-stream" id="cardStreamCout"
+                  onclick="switchStreamTab('cout')">
+                  <div class="stream-icon-wrap cyan">
+                    <span>&lt;&lt;</span>
+                  </div>
+                  <div class="stream-card-info">
+                    <div class="stream-card-top">
+                      <h3 class="stream-headline">cout — Character Output</h3>
+                      <span class="stream-op-pill cyan">&lt;&lt; Insertion</span>
+                    </div>
+                    <p class="stream-card-desc">Sends text, numbers, and evaluated expressions to the console/screen.
+                    </p>
+                    <div class="stream-rules-row">
+                      <span class="stream-badge-tag">cout &lt;&lt; "Hello World";</span>
+                      <span class="stream-badge-tag">cout &lt;&lt; score &lt;&lt; endl;</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cin Card -->
+                <div class="stream-card cin-card clickable-stream" id="cardStreamCin" onclick="switchStreamTab('cin')">
+                  <div class="stream-icon-wrap indigo">
+                    <span>&gt;&gt;</span>
+                  </div>
+                  <div class="stream-card-info">
+                    <div class="stream-card-top">
+                      <h3 class="stream-headline">cin — Character Input</h3>
+                      <span class="stream-op-pill indigo">&gt;&gt; Extraction</span>
+                    </div>
+                    <p class="stream-card-desc">Extracts typed user input from the keyboard and stores it into a
+                      variable.</p>
+                    <div class="stream-rules-row">
+                      <span class="stream-badge-tag">cin &gt;&gt; age;</span>
+                      <span class="stream-badge-tag">cin &gt;&gt; x &gt;&gt; y;</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Key Helpers Box -->
+                <div class="stream-helpers-box">
+                  <div class="section-mini-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="16 18 22 12 16 6" />
+                      <polyline points="8 6 2 12 8 18" />
+                    </svg>
+                    <span>Essential I/O Keywords &amp; Syntax</span>
+                  </div>
+                  <div class="stream-helpers-grid">
+                    <div class="stream-helper-item">
+                      <code>#include &lt;iostream&gt;</code>
+                      <span>Header library</span>
+                    </div>
+                    <div class="stream-helper-item">
+                      <code>using namespace std;</code>
+                      <span>Omits std:: prefix</span>
+                    </div>
+                    <div class="stream-helper-item">
+                      <code>endl</code>
+                      <span>Newline + flush</span>
+                    </div>
+                    <div class="stream-helper-item">
+                      <code>\n</code>
+                      <span>Fast newline</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right: Interactive Live C++ Code Window with Separate cout and cin tabs -->
+              <div class="code-example-card"
+                style="display:flex; flex-direction:column; justify-content:space-between;">
+                <div class="code-example-header">
+                  <div class="code-file-tag">
+                    <span class="traffic-dot dot-red" style="width:8px; height:8px;"></span>
+                    <span class="traffic-dot dot-yellow" style="width:8px; height:8px;"></span>
+                    <span class="traffic-dot dot-green" style="width:8px; height:8px;"></span>
+
+                    <div class="code-stream-tabs">
+                      <button class="code-stream-tab-btn active cout-tab" id="tabBtnCout"
+                        onclick="switchStreamTab('cout')" title="Show standalone std::cout example">
+                        <span>📄 cout_demo.cpp</span>
+                        <span class="badge-pill cyan">&lt;&lt; Output</span>
+                      </button>
+                      <button class="code-stream-tab-btn cin-tab" id="tabBtnCin" onclick="switchStreamTab('cin')"
+                        title="Show standalone std::cin example">
+                        <span>📥 cin_demo.cpp</span>
+                        <span class="badge-pill purple">&gt;&gt; Input</span>
+                      </button>
+                    </div>
+                  </div>
+                  <button class="copy-code-btn" onclick="copyCurrentStreamCode()">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+
+                <!-- Tab 1: COUT Only Standalone Code Body (2 Lines) -->
+                <div class="code-example-body stream-code-panel" id="panelCoutDemo"><span class="syn-type">int</span> <span class="syn-var">score</span> = <span id="valCoutScore" class="syn-num">100</span>;
+<span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Score: "</span>;</div>
+
+                <!-- Tab 2: CIN Only Standalone Code Body (3 Lines) -->
+                <div class="code-example-body stream-code-panel" id="panelCinDemo" style="display:none;"><span class="syn-type">int</span> <span class="syn-var">age</span>;
+<span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Enter your age: "</span>;
+<span class="syn-var">cin</span> <span class="syn-op">&gt;&gt;</span> <span class="syn-var">age</span>;</div>
+
+                <!-- Interactive Live Runner Bar for COUT -->
+                <div class="code-interactive-bar stream-runner-bar" id="runnerCout">
+                  <span class="interactive-label">⚡ Test cout Output:</span>
+                  <div class="interactive-btn-group">
+                    <button class="test-input-btn active" onclick="runCoutOnlyDemo(100, this)">Score: 100</button>
+                    <button class="test-input-btn" onclick="runCoutOnlyDemo(250, this)">Score: 250</button>
+                    <button class="test-input-btn" onclick="runCoutOnlyDemo(500, this)">Score: 500</button>
+                  </div>
+                </div>
+
+                <!-- Interactive Live Runner Bar for CIN -->
+                <div class="code-interactive-bar stream-runner-bar" id="runnerCin" style="display:none;">
+                  <span class="interactive-label">⚡ cin Input:</span>
+                  <div class="cin-runner-controls">
+                    <div class="cin-input-wrapper">
+                      <span class="cin-input-icon">&gt;&gt;</span>
+                      <input type="number" id="cinRunnerInput" class="cin-number-input" placeholder="Type number..."
+                        value="20" min="0" max="999" onkeydown="if(event.key==='Enter') handleCinRunSubmit()">
+                    </div>
+                    <button class="cin-submit-btn" id="btnSubmitCin" onclick="handleCinRunSubmit()"
+                      title="Run cin and print output">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span>Run &amp; Print</span>
+                    </button>
+                  </div>
+                  <div class="interactive-btn-group">
+                    <button class="test-input-btn" onclick="runCinOnlyDemo(18, this)">18</button>
+                    <button class="test-input-btn active" onclick="runCinOnlyDemo(20, this)">20</button>
+                    <button class="test-input-btn" onclick="runCinOnlyDemo(25, this)">25</button>
+                  </div>
+                </div>
+
+                <!-- Live Output Window for COUT -->
+                <div class="code-console-output stream-console-panel" id="consoleCout">
+                  <span class="console-prefix">&gt; Terminal Output (cout):</span>
+                  <span class="console-text" id="outCoutOnly"><span style="color:#34d399">Score: 100</span></span>
+                </div>
+
+                <!-- Live Output Window for CIN -->
+                <div class="code-console-output stream-console-panel" id="consoleCin" style="display:none;">
+                  <span class="console-prefix">&gt; Terminal Output (cin):</span>
+                  <div class="console-text" id="outCinOnly"
+                    style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                    <div class="cin-terminal-output-content">
+                      <div class="cin-term-line"><span style="color:#94a3b8">Enter your age: </span><span
+                          style="color:#00f0ff; font-weight:700;">20</span></div>
+                      <div class="cin-term-line" style="color:#34d399; margin-top:3px;">&gt; Stored in RAM: age = 20
+                      </div>
+                      <div class="cin-term-line" style="color:#38bdf8; margin-top:2px;">&gt; Output: 20</div>
+                    </div>
+                    <button class="cin-reenter-btn" onclick="promptCinInput()" title="Click to test another number">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M23 4v6h-6" />
+                        <path d="M1 20v-6h6" />
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                      </svg>
+                      <span>Type New Number</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 8: VARIABLES IN C++
+           ==================================================================== -->
+        <section class="slide" id="slide-7" data-index="7">
+          <div class="slide-header">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">Variables in C++</h2>
+              <div class="slide-subtitle">
+                <span>Named memory containers storing typed values in RAM</span>
+              </div>
+            </div>
+            <div class="slide-header-tags">
+              <span class="tech-tag cyan">Data Types</span>
+              <span class="tech-tag purple">Stack Memory</span>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="variables-layout">
+
+              <!-- Left: Types Card -->
+              <div class="vars-left-col">
+                <!-- Types Matrix Full Width Below -->
+                <div class="types-card">
+                  <div class="section-mini-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="4 7 4 4 20 4 20 7" />
+                      <line x1="9" y1="20" x2="15" y2="20" />
+                      <line x1="12" y1="4" x2="12" y2="20" />
+                    </svg>
+                    <span>Fundamental Data Types</span>
+                  </div>
+
+                  <div class="types-table-grid">
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">int</span>
+                        <span class="type-size">4 Bytes</span>
+                      </div>
+                      <div class="type-sample">42, -500</div>
+                    </div>
+
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">float</span>
+                        <span class="type-size">4 Bytes</span>
+                      </div>
+                      <div class="type-sample">3.14f</div>
+                    </div>
+
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">double</span>
+                        <span class="type-size">8 Bytes</span>
+                      </div>
+                      <div class="type-sample">99.9984</div>
+                    </div>
+
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">char</span>
+                        <span class="type-size">1 Byte</span>
+                      </div>
+                      <div class="type-sample">'Z', '$'</div>
+                    </div>
+
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">bool</span>
+                        <span class="type-size">1 Byte</span>
+                      </div>
+                      <div class="type-sample">true / false</div>
+                    </div>
+
+                    <div class="type-pill-box">
+                      <div class="type-header">
+                        <span class="type-name">string</span>
+                        <span class="type-size">Dynamic</span>
+                      </div>
+                      <div class="type-sample">"Hero 1"</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Interactive Memory Box Concept Card -->
+                <div class="var-box-concept-card" id="varBoxConceptCard">
+                  <div class="var-box-header">
+                    <div class="section-mini-title">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                          d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                      </svg>
+                      <span>Variable in Memory (Concept Box)</span>
+                    </div>
+                    <div class="var-code-badge">
+                      <span class="syn-kw">int</span> <span class="syn-var">x</span> <span class="syn-op">=</span> <span
+                        class="syn-num" id="declCodeVal">18</span>;
+                    </div>
+                  </div>
+
+                  <!-- Interactive Controls Row -->
+                  <div class="var-box-controls">
+                    <div class="val-presets-wrap">
+                      <span class="ctrl-label">Value:</span>
+                      <button class="var-val-chip active" onclick="selectBoxValue(18, this)">18</button>
+                      <button class="var-val-chip" onclick="selectBoxValue(100, this)">100</button>
+                      <button class="var-val-chip" onclick="selectBoxValue(7, this)">7</button>
+                      <button class="var-val-chip" onclick="selectBoxValue(-50, this)">-50</button>
+                    </div>
+                    <div class="var-actions-wrap">
+                      <button class="btn-store-val" id="btnStoreVal" onclick="animateStoreValueInBox()"
+                        title="Put value into box x">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <polyline points="19 12 12 19 5 12"></polyline>
+                        </svg>
+                        <span>Put in Box</span>
+                      </button>
+                      <button class="btn-reset-val" onclick="resetBoxValue()" title="Reset Box">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                          <path d="M3 3v5h5" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Box Stage Area -->
+                  <div class="var-box-stage">
+                    <!-- Value In-Flight / Source Slot -->
+                    <div class="flying-value-slot" id="flightSlot">
+                      <div class="flying-val-capsule" id="flyingValCapsule">
+                        <span class="capsule-type-prefix">int</span>
+                        <span class="capsule-number" id="flyingValNum">18</span>
+                      </div>
+                      <div class="drop-guideline" id="dropGuideline">
+                        <span class="drop-arrow-anim">↓</span>
+                      </div>
+                    </div>
+
+                    <!-- The 3D Cyber Memory Container Box -->
+                    <div class="memory-box-container" id="memBoxContainer">
+                      <div class="box-meta-bar">
+                        <div class="box-badge-type">
+                          <span class="badge-sub">TYPE:</span>
+                          <span class="badge-main-type">int <small>(4 Bytes)</small></span>
+                        </div>
+                        <div class="box-badge-addr">
+                          <span class="badge-sub">RAM ADDR:</span>
+                          <span class="badge-addr-val">0x7FFE4A</span>
+                        </div>
+                      </div>
+
+                      <div class="box-chamber" id="boxChamber">
+                        <div class="box-interior" id="boxInterior">
+                          <div class="box-empty-prompt" id="boxEmptyPrompt">
+                            <span>(Empty 4-Byte Chamber)</span>
+                          </div>
+                          <div class="box-stored-value" id="boxStoredVal" style="display: none;">
+                            <span class="stored-type-tag">int</span>
+                            <span class="stored-num" id="boxStoredNum">18</span>
+                          </div>
+                        </div>
+
+                        <!-- Variable Identifier on Box -->
+                        <div class="box-name-tag">
+                          <span class="name-sub">VARIABLE NAME</span>
+                          <span class="name-id">x</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Feedback Explanation Footer -->
+                  <div class="var-box-footer-note" id="boxFooterNote">
+                    <span class="note-icon">💡</span>
+                    <span class="note-text" id="boxStatusText">Click <strong>"Put in Box"</strong> to assign the integer
+                      value into container <code>x</code>.</span>
+                  </div>
+                </div>
+
+              </div>
+
+
+              <!-- Right: Exact Terminal Code Window -->
+              <div class="terminal-window">
+                <div class="terminal-header">
+                  <div class="traffic-dots">
+                    <span class="traffic-dot dot-red"></span>
+                    <span class="traffic-dot dot-yellow"></span>
+                    <span class="traffic-dot dot-green"></span>
+                  </div>
+                  <button class="copy-code-btn" onclick="copySnippet('codeVars')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+
+                <div class="terminal-body" id="codeVars"><span class="syn-kw">int</span> <span class="syn-var">age</span> <span class="syn-op">=</span> <span class="syn-num">18</span>;
+<span class="syn-type">double</span> <span class="syn-var">gpa</span> <span class="syn-op">=</span> <span class="syn-num">3.95</span>;
+<span class="syn-kw">char</span> <span class="syn-var">grade</span> <span class="syn-op">=</span> <span class="syn-str">'A'</span>;
+<span class="syn-kw">bool</span> <span class="syn-var">isStudent</span> <span class="syn-op">=</span> <span class="syn-kw">true</span>;
+<span class="syn-type">string</span> <span class="syn-var">name</span> <span class="syn-op">=</span> <span class="syn-str">"Ahmed"</span>;
+
+<span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-var">name</span>;</div>
+
+                <!-- Live Execution Bar -->
+                <div class="code-interactive-bar">
+                  <span class="interactive-label">⚡ Live Execution:</span>
+                  <button class="run-code-action-btn" id="btnRunVarsCode" onclick="runVarsDemo()"
+                    title="Click to run this code">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Run Code</span>
+                  </button>
+                </div>
+
+                <!-- Live Output Window -->
+                <div class="code-console-output" id="consoleVarsOutput">
+                  <span class="console-prefix">&gt; Terminal Output:</span>
+                  <span class="console-text" id="outVarsResult"><span style="color:#64748b; font-style:italic;">Click
+                      "Run Code" to execute...</span></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 9: IF STATEMENT IN C++ (ENLARGED CENTERED DIAGRAM)
+           ==================================================================== -->
+        <section class="slide" id="slide-8" data-index="8">
+          <div class="slide-header no-divider">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">If Statements in C++</h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="if-centered-stage">
+
+              <!-- SVG Flowchart Card (Enlarged & Centered) -->
+              <div class="flowchart-card">
+                <div class="section-mini-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="18" cy="18" r="3" />
+                    <circle cx="6" cy="6" r="3" />
+                    <path d="M6 21V9a9 9 0 0 0 9 9" />
+                  </svg>
+                  <span>BRANCHING EXECUTION LOGIC FLOW</span>
+                </div>
+
+                <div class="flowchart-svg-wrap">
+                  <svg viewBox="0 0 760 215" width="100%" height="100%" style="overflow: visible;">
+                    <defs>
+                      <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00f0ff" flood-opacity="0.45" />
+                      </filter>
+                      <filter id="glowPurple" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a855f7" flood-opacity="0.45" />
+                      </filter>
+                    </defs>
+
+                    <!-- 1st Diamond (Condition) -->
+                    <polygon points="160,32 255,68 160,104 65,68" fill="#0b1328" stroke="#00f0ff" stroke-width="2.2"
+                      filter="url(#glowCyan)" />
+                    <text x="160" y="64" fill="#00f0ff" font-family="Outfit, sans-serif" font-size="14.5"
+                      font-weight="800" text-anchor="middle" letter-spacing="0.02em">Condition</text>
+                    <text x="160" y="84" fill="#94a3b8" font-family="Fira Code, monospace" font-size="11.5"
+                      font-weight="500" text-anchor="middle">(health &gt; 0)</text>
+
+                    <!-- Arrow True -> Downwards (Dashed Emerald Line) -->
+                    <line x1="160" y1="104" x2="160" y2="156" stroke="#10b981" stroke-width="2.5"
+                      stroke-dasharray="4,4" />
+                    <polyline points="155,150 160,158 165,150" fill="none" stroke="#10b981" stroke-width="2.5"
+                      stroke-linecap="round" />
+
+                    <!-- TRUE Pill Badge -->
+                    <rect x="168" y="116" width="46" height="20" rx="5" fill="rgba(16,185,129,0.18)" stroke="#10b981"
+                      stroke-width="1.2" />
+                    <text x="191" y="130" fill="#34d399" font-family="Fira Code, monospace" font-size="10"
+                      font-weight="800" text-anchor="middle">TRUE</text>
+
+                    <!-- Execute IF Block Box -->
+                    <rect x="70" y="160" width="180" height="38" rx="8" fill="rgba(6,78,59,0.35)" stroke="#10b981"
+                      stroke-width="2" />
+                    <text x="160" y="184" fill="#a7f3d0" font-family="Fira Code, monospace" font-size="13"
+                      font-weight="700" text-anchor="middle">Execute IF Block</text>
+
+                    <!-- Arrow False -> Rightwards (Dashed Crimson Line) -->
+                    <line x1="255" y1="68" x2="375" y2="68" stroke="#f43f5e" stroke-width="2.5"
+                      stroke-dasharray="4,4" />
+                    <polyline points="368,63 376,68 368,73" fill="none" stroke="#f43f5e" stroke-width="2.5"
+                      stroke-linecap="round" />
+
+                    <!-- FALSE Pill Badge -->
+                    <rect x="290" y="47" width="50" height="20" rx="5" fill="rgba(244,63,94,0.22)" stroke="#f43f5e"
+                      stroke-width="1.2" />
+                    <text x="315" y="61" fill="#fda4af" font-family="Fira Code, monospace" font-size="10"
+                      font-weight="800" text-anchor="middle">FALSE</text>
+
+                    <!-- 2nd Diamond (ELSE IF Check) -->
+                    <polygon points="460,32 545,68 460,104 375,68" fill="#0b1328" stroke="#a855f7" stroke-width="2.2"
+                      filter="url(#glowPurple)" />
+                    <text x="460" y="64" fill="#c084fc" font-family="Outfit, sans-serif" font-size="14"
+                      font-weight="800" text-anchor="middle" letter-spacing="0.02em">ELSE IF Check</text>
+                    <text x="460" y="84" fill="#94a3b8" font-family="Fira Code, monospace" font-size="11.5"
+                      font-weight="500" text-anchor="middle">(isRevivable)</text>
+
+                    <!-- Else If True -> Downwards (Solid Emerald Line) -->
+                    <line x1="460" y1="104" x2="460" y2="156" stroke="#10b981" stroke-width="2.5" />
+                    <polyline points="455,150 460,158 465,150" fill="none" stroke="#10b981" stroke-width="2.5"
+                      stroke-linecap="round" />
+
+                    <!-- Execute ELSE IF Box -->
+                    <rect x="370" y="160" width="180" height="38" rx="8" fill="rgba(88,28,135,0.35)" stroke="#a855f7"
+                      stroke-width="2" />
+                    <text x="460" y="184" fill="#e9d5ff" font-family="Fira Code, monospace" font-size="13"
+                      font-weight="700" text-anchor="middle">Execute ELSE IF</text>
+
+                    <!-- Else If False -> Else Block (Solid Crimson Line) -->
+                    <line x1="545" y1="68" x2="630" y2="68" stroke="#f43f5e" stroke-width="2.5" />
+                    <polyline points="622,63 630,68 622,73" fill="none" stroke="#f43f5e" stroke-width="2.5"
+                      stroke-linecap="round" />
+
+                    <!-- ELSE Block Box -->
+                    <rect x="630" y="49" width="112" height="38" rx="8" fill="rgba(136,19,55,0.35)" stroke="#f43f5e"
+                      stroke-width="2" />
+                    <text x="686" y="73" fill="#fda4af" font-family="Fira Code, monospace" font-size="13"
+                      font-weight="700" text-anchor="middle">ELSE Block</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- 3 Syntax Cards Tier Row -->
+              <div class="syntax-cards-row">
+                <div class="syntax-tier-box tier-if">
+                  <div class="syntax-tier-title">if (condition)</div>
+                  <div class="syntax-tier-desc">Executes solely when the test condition evaluates to <code>true</code>.
+                  </div>
+                </div>
+
+                <div class="syntax-tier-box tier-elseif">
+                  <div class="syntax-tier-title">else if (other)</div>
+                  <div class="syntax-tier-desc">Evaluated only if all preceding if-conditions failed.</div>
+                </div>
+
+                <div class="syntax-tier-box tier-else">
+                  <div class="syntax-tier-title">else</div>
+                  <div class="syntax-tier-desc">Universal fallback executed when no conditions are met.</div>
+                </div>
+              </div>
+
+              <!-- Relational & Logical Operators Bar -->
+              <div class="operators-bar">
+                <div class="ops-group">
+                  <span class="ops-title">COMPARISON:</span>
+                  <span class="op-chip">==</span>
+                  <span class="op-chip">!=</span>
+                  <span class="op-chip">&lt;</span>
+                  <span class="op-chip">&gt;</span>
+                  <span class="op-chip">&gt;=</span>
+                </div>
+                <div class="ops-group">
+                  <span class="ops-title">LOGICAL:</span>
+                  <span class="op-chip logical-and">&amp;&amp; AND</span>
+                  <span class="op-chip logical-or">|| OR</span>
+                  <span class="op-chip logical-not">! NOT</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 10: IF STATEMENT - PRACTICAL CODE EXAMPLES (SIMPLE & INTERACTIVE)
+           ==================================================================== -->
+        <section class="slide" id="slide-9" data-index="9">
+          <div class="slide-header no-divider">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">If Statement in Action</h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="if-code-stage">
+
+              <div class="if-examples-grid">
+
+                <!-- Example 1: Simple If - Else (Pass / Fail Evaluation) -->
+                <div class="code-example-card">
+                  <div class="code-example-header">
+                    <div class="code-file-tag">
+                      <span class="traffic-dot dot-red" style="width:8px; height:8px;"></span>
+                      <span class="traffic-dot dot-yellow" style="width:8px; height:8px;"></span>
+                      <span class="traffic-dot dot-green" style="width:8px; height:8px;"></span>
+                      <span style="margin-left: 4px;">pass_fail.cpp</span>
+                      <span class="badge-pill cyan">if - else</span>
+                    </div>
+                    <button class="copy-code-btn" onclick="copySnippet('codePassFail')">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+
+                  <div class="code-example-body" id="codePassFail"><span class="syn-lib">#include</span> <span class="syn-str">&lt;iostream&gt;</span>
+<span class="syn-kw">using namespace</span> <span class="syn-type">std</span>;
+<span class="syn-type">int</span> <span class="syn-kw">main</span>() {
+    <span class="syn-type">int</span> <span class="syn-var">score</span> <span class="syn-op">=</span> <span class="syn-num" id="valPassFailScore">85</span>;
+<span class="code-highlight-branch" id="branchPass">    <span class="syn-kw">if</span> (<span class="syn-var">score</span> <span class="syn-op">&gt;=</span> <span class="syn-num">50</span>) {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Passed!"</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-var">endl</span>;
+    }</span><span class="code-highlight-branch" id="branchFail">    <span class="syn-kw">else</span> {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Failed!"</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-var">endl</span>;
+    }</span>
+    <span class="syn-kw">return</span> <span class="syn-num">0</span>;
+}</div>
+
+                  <!-- Interactive Live Runner Bar -->
+                  <div class="code-interactive-bar">
+                    <div class="interactive-btn-group">
+                      <span class="interactive-label">Score:</span>
+                      <button class="test-input-btn active" id="btnScore85"
+                        onclick="setPassFailScore(85, this)">85</button>
+                      <button class="test-input-btn" id="btnScore40" onclick="setPassFailScore(40, this)">40</button>
+                    </div>
+                    <button class="run-code-action-btn" id="btnRunPassFailCode" onclick="runPassFailDemo()"
+                      title="Click to run this code">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      <span>Run Code</span>
+                    </button>
+                  </div>
+
+                  <!-- Live Output Window -->
+                  <div class="code-console-output" id="consolePassFailOutput">
+                    <span class="console-prefix">&gt; Terminal Output:</span>
+                    <span class="console-text" id="outPassFailResult"><span
+                        style="color:#64748b; font-style:italic;">Click "Run Code" to execute...</span></span>
+                  </div>
+                </div>
+
+                <!-- Example 2: Multi-condition If - Else If - Else (Grade Evaluation) -->
+                <div class="code-example-card">
+                  <div class="code-example-header">
+                    <div class="code-file-tag">
+                      <span class="traffic-dot dot-red" style="width:8px; height:8px;"></span>
+                      <span class="traffic-dot dot-yellow" style="width:8px; height:8px;"></span>
+                      <span class="traffic-dot dot-green" style="width:8px; height:8px;"></span>
+                      <span style="margin-left: 4px;">student_grades.cpp</span>
+                      <span class="badge-pill purple">else if</span>
+                    </div>
+                    <button class="copy-code-btn" onclick="copySnippet('codeGrades')">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+
+                  <div class="code-example-body" id="codeGrades"><span class="syn-lib">#include</span> <span class="syn-str">&lt;iostream&gt;</span>
+<span class="syn-kw">using namespace</span> <span class="syn-type">std</span>;
+<span class="syn-type">int</span> <span class="syn-kw">main</span>() {
+    <span class="syn-type">int</span> <span class="syn-var">score</span> <span class="syn-op">=</span> <span class="syn-num" id="valScoreDisplay">85</span>;
+<span class="code-highlight-branch" id="branchGradeA">    <span class="syn-kw">if</span> (<span class="syn-var">score</span> <span class="syn-op">&gt;=</span> <span class="syn-num">90</span>) {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Grade: Excellent (A)"</span>;
+    }</span><span class="code-highlight-branch" id="branchGradeB">    <span class="syn-kw">else if</span> (<span class="syn-var">score</span> <span class="syn-op">&gt;=</span> <span class="syn-num">75</span>) {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Grade: Very Good (B)"</span>;
+    }</span><span class="code-highlight-branch" id="branchGradeC">    <span class="syn-kw">else if</span> (<span class="syn-var">score</span> <span class="syn-op">&gt;=</span> <span class="syn-num">50</span>) {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Grade: Pass (C)"</span>;
+    }</span><span class="code-highlight-branch" id="branchGradeF">    <span class="syn-kw">else</span> {
+        <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Grade: Try Again (F)"</span>;
+    }</span>
+    <span class="syn-kw">return</span> <span class="syn-num">0</span>;
+}</div>
+
+                  <!-- Interactive Live Runner Bar -->
+                  <div class="code-interactive-bar">
+                    <span class="interactive-label">⚡ Test Score:</span>
+                    <div class="interactive-btn-group">
+                      <button class="test-input-btn" onclick="runGradesDemo(95, this)">95 (A)</button>
+                      <button class="test-input-btn active" onclick="runGradesDemo(85, this)">85 (B)</button>
+                      <button class="test-input-btn" onclick="runGradesDemo(60, this)">60 (C)</button>
+                      <button class="test-input-btn" onclick="runGradesDemo(40, this)">40 (F)</button>
+                    </div>
+                  </div>
+
+                  <!-- Live Output Window -->
+                  <div class="code-console-output">
+                    <span class="console-prefix">&gt; Terminal Output:</span>
+                    <span class="console-text" id="outGrades">Grade: Very Good (B)</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- 3 Summary Explanation Footer Pills -->
+              <div class="if-summary-footer-bar">
+                <div class="if-summary-item">
+                  <span class="if-summary-badge cyan">if</span>
+                  <span class="if-summary-text">يُفحص أولاً: إذا كان الشرط صحيحاً (true) يتم تنفيذ الكود الذي بداخله
+                    فقط.</span>
+                </div>
+                <div class="if-summary-item">
+                  <span class="if-summary-badge blue">else if</span>
+                  <span class="if-summary-text">شرط إضافي: يُفحص فقط في حال كانت الشروط السابقة غير متحققة
+                    (false).</span>
+                </div>
+                <div class="if-summary-item">
+                  <span class="if-summary-badge purple">else</span>
+                  <span class="if-summary-text">المسار البديل: يُنفذ تلقائياً إذا لم يتحقق أي شرط من الشروط
+                    السابقة.</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+           SLIDE 11: QUESTIONS / INTERACTIVE QUIZ
+           ==================================================================== -->
+        <section class="slide" id="slide-10" data-index="10">
+          <div class="slide-header no-divider">
+            <div class="slide-title-wrap">
+              <h2 class="slide-title">Knowledge Check &amp; Quiz</h2>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="quiz-slide-layout">
+
+              <!-- Quiz Control Bar -->
+              <div class="quiz-header-bar">
+                <div class="quiz-score-badge">
+                  <span style="font-size: 13px; color: var(--text-secondary);">Current Progress:</span>
+                  <span class="score-counter" id="quizScore">Score: 0 / 3</span>
+                </div>
+                <button class="reset-quiz-btn" id="btnResetQuiz">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6" />
+                    <path d="M1 20v-6h6" />
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                  </svg>
+                  <span>Reset Quiz</span>
+                </button>
+              </div>
+
+              <!-- 3 Quiz Cards Grid -->
+              <div class="quiz-cards-grid">
+
+                <!-- Question 1 -->
+                <div class="quiz-card" data-q="0">
+                  <div>
+                    <div class="q-top">
+                      <span class="q-badge">Question 01</span>
+                      <span class="q-status-icon"></span>
+                    </div>
+                    <div class="q-prompt">What will be printed to the console?</div>
+                    <div class="q-terminal">
+                      <div class="q-terminal-header">
+                        <div class="traffic-dots">
+                          <span class="traffic-dot dot-red" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-yellow" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-green" style="width: 9px; height: 9px;"></span>
+                        </div>
+                      </div>
+                      <div class="q-terminal-body"><span class="syn-kw">int</span> <span class="syn-var">speed</span> <span class="syn-op">=</span> <span class="syn-num">75</span>;
+<span class="syn-kw">if</span> (<span class="syn-var">speed</span> <span class="syn-op">&gt;</span> <span class="syn-num">80</span>) {
+    <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Fast"</span>;
+} <span class="syn-kw">else if</span> (<span class="syn-var">speed</span> <span class="syn-op">&gt;=</span> <span class="syn-num">60</span>) {
+    <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Normal"</span>;
+} <span class="syn-kw">else</span> {
+    <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Slow"</span>;
+}</div>
+                    </div>
+                    <div class="options-list">
+                      <button class="quiz-option" data-opt="0" onclick="answerQuestion(0, 0)">
+                        <span class="opt-letter">A</span>
+                        <span>Fast</span>
+                      </button>
+                      <button class="quiz-option" data-opt="1" onclick="answerQuestion(0, 1)">
+                        <span class="opt-letter">B</span>
+                        <span>Normal</span>
+                      </button>
+                      <button class="quiz-option" data-opt="2" onclick="answerQuestion(0, 2)">
+                        <span class="opt-letter">C</span>
+                        <span>Slow</span>
+                      </button>
+                      <button class="quiz-option" data-opt="3" onclick="answerQuestion(0, 3)">
+                        <span class="opt-letter">D</span>
+                        <span>Compilation Error</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="quiz-feedback" id="fb-0"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-card" data-q="1">
+                  <div>
+                    <div class="q-top">
+                      <span class="q-badge">Question 02</span>
+                      <span class="q-status-icon"></span>
+                    </div>
+                    <div class="q-prompt">What will be printed to the console?</div>
+                    <div class="q-terminal">
+                      <div class="q-terminal-header">
+                        <div class="traffic-dots">
+                          <span class="traffic-dot dot-red" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-yellow" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-green" style="width: 9px; height: 9px;"></span>
+                        </div>
+                      </div>
+                      <div class="q-terminal-body"><span class="syn-kw">int</span> <span class="syn-var">score</span> <span class="syn-op">=</span> <span class="syn-num">40</span>;
+
+<span class="syn-kw">if</span> (<span class="syn-var">score</span> <span class="syn-op">&gt;=</span> <span class="syn-num">50</span>) {
+    <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Passed"</span>;
+} <span class="syn-kw">else</span> {
+    <span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Failed"</span>;
+}</div>
+                    </div>
+                    <div class="options-list">
+                      <button class="quiz-option" data-opt="0" onclick="answerQuestion(1, 0)">
+                        <span class="opt-letter">A</span>
+                        <span>Passed</span>
+                      </button>
+                      <button class="quiz-option" data-opt="1" onclick="answerQuestion(1, 1)">
+                        <span class="opt-letter">B</span>
+                        <span>Failed</span>
+                      </button>
+                      <button class="quiz-option" data-opt="2" onclick="answerQuestion(1, 2)">
+                        <span class="opt-letter">C</span>
+                        <span>40</span>
+                      </button>
+                      <button class="quiz-option" data-opt="3" onclick="answerQuestion(1, 3)">
+                        <span class="opt-letter">D</span>
+                        <span>Compilation Error</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="quiz-feedback" id="fb-1"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-card" data-q="2">
+                  <div>
+                    <div class="q-top">
+                      <span class="q-badge">Question 03</span>
+                      <span class="q-status-icon"></span>
+                    </div>
+                    <div class="q-prompt">What will be printed to the console?</div>
+                    <div class="q-terminal">
+                      <div class="q-terminal-header">
+                        <div class="traffic-dots">
+                          <span class="traffic-dot dot-red" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-yellow" style="width: 9px; height: 9px;"></span>
+                          <span class="traffic-dot dot-green" style="width: 9px; height: 9px;"></span>
+                        </div>
+                      </div>
+                      <div class="q-terminal-body"><span class="syn-kw">int</span> <span class="syn-var">age</span> <span class="syn-op">=</span> <span class="syn-num">18</span>;
+
+<span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> (<span class="syn-var">age</span> <span class="syn-op">&gt;</span> <span class="syn-num">17</span> ? <span class="syn-str">"yes"</span> : <span class="syn-str">"NO"</span>);</div>
+                    </div>
+
+                    <div class="options-list">
+                      <button class="quiz-option" data-opt="0" onclick="answerQuestion(2, 0)">
+                        <span class="opt-letter">A</span>
+                        <span>yes</span>
+                      </button>
+                      <button class="quiz-option" data-opt="1" onclick="answerQuestion(2, 1)">
+                        <span class="opt-letter">B</span>
+                        <span>NO</span>
+                      </button>
+                      <button class="quiz-option" data-opt="2" onclick="answerQuestion(2, 2)">
+                        <span class="opt-letter">C</span>
+                        <span>18</span>
+                      </button>
+                      <button class="quiz-option" data-opt="3" onclick="answerQuestion(2, 3)">
+                        <span class="opt-letter">D</span>
+                        <span>Compilation Error</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="quiz-feedback" id="fb-2"></div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Floating Bottom Navigation Dock -->
+    <nav class="bottom-dock">
+      <button class="dock-btn" id="btnPrev" title="Previous Slide (←)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+      </button>
+
+      <span class="dock-counter" id="slideCounter">1 / 10</span>
+
+      <button class="dock-btn" id="btnNext" title="Next Slide (→ / Space)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </button>
+
+      <div class="dock-divider"></div>
+
+      <button class="dock-btn" id="btnDockOverview" title="Slide Overview Grid">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ====================================================================
+       FLOATING DRAGGABLE WHITEBOARD & NOTES WINDOW
+       ==================================================================== -->
+  <div class="floating-whiteboard" id="floatingWhiteboard">
+    <!-- Header (Drag Handle & Controls) -->
+    <div class="whiteboard-header" id="whiteboardHeader">
+      <div class="wb-header-left">
+        <svg class="wb-drag-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="8" cy="6" r="1.5" fill="currentColor" />
+          <circle cx="16" cy="6" r="1.5" fill="currentColor" />
+          <circle cx="8" cy="12" r="1.5" fill="currentColor" />
+          <circle cx="16" cy="12" r="1.5" fill="currentColor" />
+          <circle cx="8" cy="18" r="1.5" fill="currentColor" />
+          <circle cx="16" cy="18" r="1.5" fill="currentColor" />
+        </svg>
+        <span class="wb-title">Whiteboard</span>
+      </div>
+
+      <div class="wb-header-tools">
+        <!-- Tabs: Draw / Notes -->
+        <div class="wb-tabs">
+          <button class="wb-tab-btn active" id="wbTabDraw" title="Draw with Pen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            <span>Draw</span>
+          </button>
+          <button class="wb-tab-btn" id="wbTabNotes" title="Type Notes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            <span>Notes</span>
+          </button>
+        </div>
+
+        <!-- Draw Tools (Markers, Eraser, Clear) -->
+        <div class="wb-draw-controls" id="wbDrawControls">
+          <button class="wb-color-btn active" data-color="#0f172a" style="--c: #0f172a;" title="Black Marker"></button>
+          <button class="wb-color-btn" data-color="#2563eb" style="--c: #2563eb;" title="Blue Marker"></button>
+          <button class="wb-color-btn" data-color="#dc2626" style="--c: #dc2626;" title="Red Marker"></button>
+          <button class="wb-color-btn" data-color="#16a34a" style="--c: #16a34a;" title="Green Marker"></button>
+          <div class="wb-divider"></div>
+          <button class="wb-action-tool" id="wbEraserBtn" title="Eraser Tool">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+              <path d="M22 21H7" />
+              <path d="m5 11 9 9" />
+            </svg>
+          </button>
+          <button class="wb-action-tool" id="wbClearBtn" title="Clear Whiteboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+          </button>
+        </div>
+
+        <button class="wb-btn-close" id="wbCloseBtn" title="Close Whiteboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Whiteboard Content Body -->
+    <div class="whiteboard-body">
+      <!-- 1. Interactive Drawing Canvas -->
+      <div class="wb-pane active" id="wbCanvasPane">
+        <canvas id="whiteboardCanvas"></canvas>
+      </div>
+
+      <!-- 2. Textual Notes Area -->
+      <div class="wb-pane" id="wbNotesPane">
+        <textarea id="wbNotesArea"
+          placeholder="Write any presentation notes, code reminders, or discussion points here..."
+          dir="auto"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Overview Grid Modal -->
+  <div class="modal-backdrop" id="overviewModal">
+    <div class="overview-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Presentation Overview</h3>
+        <button class="modal-close-btn" id="btnCloseOverview">✕</button>
+      </div>
+      <div class="overview-grid">
+        <div class="thumb-card" data-jump="0">
+          <span class="thumb-num">01</span>
+          <div class="thumb-title">About the Presenter</div>
+          <div class="thumb-desc">Eng. Ahmed Mohamed — Full Stack Dev @ ISON Xperiences</div>
+        </div>
+        <div class="thumb-card" data-jump="1">
+          <span class="thumb-num">02</span>
+          <div class="thumb-title">Course Roadmap</div>
+          <div class="thumb-desc">6 Learning Milestones &amp; Progression Timeline</div>
+        </div>
+        <div class="thumb-card" data-jump="2">
+          <span class="thumb-num">03</span>
+          <div class="thumb-title">Intro to Programming</div>
+          <div class="thumb-desc">Bilingual Concepts &amp; Daily Life Impact</div>
+        </div>
+        <div class="thumb-card" data-jump="3">
+          <span class="thumb-num">04</span>
+          <div class="thumb-title">Languages Tree</div>
+          <div class="thumb-desc">Language Domains, Specialties &amp; C++ Focus</div>
+        </div>
+        <div class="thumb-card" data-jump="4">
+          <span class="thumb-num">05</span>
+          <div class="thumb-title">C++ Masterclass</div>
+          <div class="thumb-desc">C++ Programming Language &amp; High-Performance Core</div>
+        </div>
+        <div class="thumb-card" data-jump="5">
+          <span class="thumb-num">06</span>
+          <div class="thumb-title">Introduction to C++</div>
+          <div class="thumb-desc">Performance Pillars &amp; Real-World Software Systems</div>
+        </div>
+        <div class="thumb-card" data-jump="6">
+          <span class="thumb-num">07</span>
+          <div class="thumb-title">Cout &lt;&lt; &amp; Cin &gt;&gt;</div>
+          <div class="thumb-desc">Standard Input &amp; Output Streams and Syntax</div>
+        </div>
+        <div class="thumb-card" data-jump="7">
+          <span class="thumb-num">08</span>
+          <div class="thumb-title">Variables in C++</div>
+          <div class="thumb-desc">Memory Allocation, Naming Rules &amp; Data Types</div>
+        </div>
+        <div class="thumb-card" data-jump="8">
+          <span class="thumb-num">09</span>
+          <div class="thumb-title">If Statement in C++</div>
+          <div class="thumb-desc">Branching Flowchart, Logic Diagram &amp; Syntax</div>
+        </div>
+        <div class="thumb-card" data-jump="9">
+          <span class="thumb-num">10</span>
+          <div class="thumb-title">If in Action (Code)</div>
+          <div class="thumb-desc">Simple C++ Code Examples &amp; Live Demo</div>
+        </div>
+        <div class="thumb-card" data-jump="10">
+          <span class="thumb-num">11</span>
+          <div class="thumb-title">Questions / Quiz</div>
+          <div class="thumb-desc">Interactive Practice with Instant Evaluation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="presentation.js"></script>
 </body>
+
 </html>
