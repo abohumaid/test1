@@ -1612,11 +1612,11 @@ function handleCinRunSubmit() {
   runCinOnlyDemo(val);
 }
 
-function runCoutOnlyDemo(score, btn) {
-  const codeScore = document.getElementById('valCoutScore');
+function runCoutOnlyDemo(text, btn) {
+  const codeText = document.getElementById('valCoutText');
   const outDisplay = document.getElementById('outCoutOnly');
 
-  if (codeScore) codeScore.textContent = score;
+  if (codeText) codeText.textContent = `"${text}"`;
 
   if (btn && btn.parentElement) {
     btn.parentElement.querySelectorAll('.test-input-btn').forEach(b => b.classList.remove('active'));
@@ -1624,7 +1624,7 @@ function runCoutOnlyDemo(score, btn) {
   }
 
   if (outDisplay) {
-    outDisplay.innerHTML = `<span style="color:#34d399">Score: ${score}</span>`;
+    outDisplay.innerHTML = `<span style="color:#34d399">${text}</span>`;
   }
   playAudioTone(640, 'sine', 0.08, 0.03);
 }

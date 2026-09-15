@@ -1202,8 +1202,8 @@
                     <p class="stream-card-desc">Sends text, numbers, and evaluated expressions to the console/screen.
                     </p>
                     <div class="stream-rules-row">
-                      <span class="stream-badge-tag">cout &lt;&lt; "Hello World";</span>
-                      <span class="stream-badge-tag">cout &lt;&lt; score &lt;&lt; endl;</span>
+                      <span class="stream-badge-tag">cout &lt;&lt; "Hello World!";</span>
+                      <span class="stream-badge-tag">cout &lt;&lt; "Welcome" &lt;&lt; endl;</span>
                     </div>
                   </div>
                 </div>
@@ -1289,9 +1289,8 @@
                   </button>
                 </div>
 
-                <!-- Tab 1: COUT Only Standalone Code Body (2 Lines) -->
-                <div class="code-example-body stream-code-panel" id="panelCoutDemo"><span class="syn-type">int</span> <span class="syn-var">score</span> = <span id="valCoutScore" class="syn-num">100</span>;
-<span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-str">"Score: "</span>;</div>
+                <!-- Tab 1: COUT Only Standalone Code Body (Pure output without variables) -->
+                <div class="code-example-body stream-code-panel" id="panelCoutDemo"><span class="syn-var">cout</span> <span class="syn-op">&lt;&lt;</span> <span id="valCoutText" class="syn-str">"Hello World!"</span> <span class="syn-op">&lt;&lt;</span> <span class="syn-type">endl</span>;</div>
 
                 <!-- Tab 2: CIN Only Standalone Code Body (3 Lines) -->
                 <div class="code-example-body stream-code-panel" id="panelCinDemo" style="display:none;"><span class="syn-type">int</span> <span class="syn-var">age</span>;
@@ -1302,9 +1301,9 @@
                 <div class="code-interactive-bar stream-runner-bar" id="runnerCout">
                   <span class="interactive-label">⚡ Test cout Output:</span>
                   <div class="interactive-btn-group">
-                    <button class="test-input-btn active" onclick="runCoutOnlyDemo(100, this)">Score: 100</button>
-                    <button class="test-input-btn" onclick="runCoutOnlyDemo(250, this)">Score: 250</button>
-                    <button class="test-input-btn" onclick="runCoutOnlyDemo(500, this)">Score: 500</button>
+                    <button class="test-input-btn active" onclick="runCoutOnlyDemo('Hello World!', this)">"Hello World!"</button>
+                    <button class="test-input-btn" onclick="runCoutOnlyDemo('Welcome to C++!', this)">"Welcome to C++!"</button>
+                    <button class="test-input-btn" onclick="runCoutOnlyDemo('Coding is Great!', this)">"Coding is Great!"</button>
                   </div>
                 </div>
 
@@ -1335,7 +1334,7 @@
                 <!-- Live Output Window for COUT -->
                 <div class="code-console-output stream-console-panel" id="consoleCout">
                   <span class="console-prefix">&gt; Terminal Output (cout):</span>
-                  <span class="console-text" id="outCoutOnly"><span style="color:#34d399">Score: 100</span></span>
+                  <span class="console-text" id="outCoutOnly"><span style="color:#34d399">Hello World!</span></span>
                 </div>
 
                 <!-- Live Output Window for CIN -->
